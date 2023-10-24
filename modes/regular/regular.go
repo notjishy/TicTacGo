@@ -2,12 +2,12 @@ package regular
 
 import (
 	"fmt"
+	"strings"
 	"math/rand"
-	"tictacgo/logic"
+	"tictacgo/utils"
 )
 
 var board [3][3]string
-var boxes = []string{"a1", "a2", "a3", "b1", "b2", "b3", "c1", "c2", "c3"}
 
 func initializeBoard() {
 	for row := range board {
@@ -49,10 +49,12 @@ func getPlayerMove(player int) {
 		getPlayerMove(player)
 		return
 	}
-	board[row][col] = logic.PlayerSymbol(player)
+	board[row][col] = utils.PlayerSymbol(player)
 }
 
 func parseMove(move string) (int, int, bool) {
+	move = strings.ToLower(move)
+
 	if len(move) != 2 {
 		return 0, 0, false
 	}
@@ -74,7 +76,7 @@ func Play(playerCount int) {
 		}
 		availableMoves--
 		if availableMoves < 5 {
-			if logic.CheckWin(player, board) {
+			if utils.CheckWin(player, board) {
 				printBoard()
 				fmt.Printf("Player %d wins!\n", player)
 				return

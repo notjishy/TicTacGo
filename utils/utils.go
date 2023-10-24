@@ -1,4 +1,4 @@
-package logic
+package utils
 
 func PlayerSymbol(player int) string {
 	if player == 1 {
