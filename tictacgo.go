@@ -9,11 +9,11 @@ import (
 
 func askMode() string {
     var inputChar string
-    fmt.Print("Which mode would you like to play? (R/Regular | S/Super) ")
+    fmt.Print("Which mode would you like to play? (R/Regular | S/Super | Q/Quit) ")
     fmt.Scan(&inputChar)
     inputChar = strings.ToLower(inputChar)
 
-    if inputChar != "r" && inputChar != "s" {
+    if inputChar != "r" && inputChar != "s" && inputChar != "q" {
         fmt.Println("Invalid option, please choose one of the listed modes.")
         return askMode() // recursively ask for input
     }
@@ -35,12 +35,17 @@ func askPlayerCount() int {
 }
 
 func main() {
-    selectedMode := askMode() // get input using askMode function
-	playerCount := askPlayerCount() // get amount of players using askPlayerCount function
-	
-	if selectedMode == "r" {
-		regular.Play(playerCount)
-	} else if (selectedMode == "s") {
-		super.Play()
+	for {
+		selectedMode := askMode() // get input using askMode function
+		if selectedMode == "q" { break } // quit game
+
+		playerCount := askPlayerCount() // get amount of players using askPlayerCount function
+
+		// run chosen game mode
+		if selectedMode == "r" {
+			regular.Play(playerCount)
+		} else if (selectedMode == "s") {
+			super.Play()
+		}
 	}
 }
