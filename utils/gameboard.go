@@ -1,6 +1,10 @@
 package utils
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+	"github.com/TwiN/go-color"
+)
 
 var Board [3][3]string
 
@@ -17,7 +21,11 @@ func PrintBoard() {
 	for i, row := range Board {
 		fmt.Print(string('a'+i))
 		for _, cell := range row {
-			fmt.Printf(" | %s", cell)
+			if strings.HasSuffix(cell, "X") {
+				fmt.Printf(" | %s", color.InRed(cell))
+			} else {
+				fmt.Printf(" | %s", color.InBlue(cell))
+			}
 		}
 		fmt.Println(" |")
 		if i < 2 {
