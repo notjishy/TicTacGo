@@ -17,7 +17,7 @@ func switchPlayer(playerCount int, player int) int {
 func getPlayerMove(player int) {
 	fmt.Printf("Player %d, enter your move (e.g., A1, B2): ", player)
 	var move string
-	fmt.Scanln(&move)
+	fmt.Scan(&move)
 	row, col, valid := parseMove(move)
 	if !valid || utils.Board[row][col] != " " {
 		fmt.Println("Invalid move. Try again.")
