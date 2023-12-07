@@ -19,12 +19,12 @@ func getPlayerMove(player int) {
 	var move string
 	fmt.Scan(&move)
 	row, col, valid := parseMove(move)
-	if !valid || utils.Board[row][col] != " " {
+	if !valid || Board[row][col] != " " {
 		fmt.Println("Invalid move. Try again.")
 		getPlayerMove(player)
 		return
 	}
-	utils.Board[row][col] = utils.PlayerSymbol(player)
+	Board[row][col] = utils.PlayerSymbol(player)
 }
 
 func parseMove(move string) (int, int, bool) {
@@ -39,27 +39,27 @@ func parseMove(move string) (int, int, bool) {
 }
 
 func Play(playerCount int) {
-	utils.InitializeBoard()
+	InitializeBoard()
 	player := 1
 	availableMoves := 9
 	for availableMoves > 0 {
 		if (player == 1 || (playerCount == 2 && player == 2)) {
-			utils.PrintBoard()
+			PrintBoard()
 			getPlayerMove(player)
 		} else {
 			getComputerMove()
 		}
 		availableMoves--
 		if availableMoves < 5 {
-			if utils.CheckWin(player) {
-				utils.PrintBoard()
+			if utils.CheckWin(player, Board) {
+				PrintBoard()
 				fmt.Printf("Player %d wins!\n", player)
 				return
 			}
 		}
 		player = switchPlayer(playerCount, player)
 	}
-	utils.PrintBoard()
+	PrintBoard()
 	fmt.Println("It's a tie!")
 }
 
@@ -67,8 +67,8 @@ func getComputerMove() {
 	for {
 		row := rand.Intn(3)
 		col := rand.Intn(3)
-		if utils.Board[row][col] == " " {
-			utils.Board[row][col] = "O"
+		if Board[row][col] == " " {
+			Board[row][col] = "O"
 			return
 		}
 	}

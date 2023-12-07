@@ -5,5 +5,8 @@ import (
 )
 
 func Play() {
-	fmt.Println("Super Tic-Tac-Toe coming soon!")
+	InitializeSuperBoard()
+	PrintSuperBoard()
+
+	fmt.Println("This mode is not currently functional,\nbut here is a preview of what the game looks like so far!\n\nAnyways...")
 }

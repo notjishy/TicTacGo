@@ -7,7 +7,7 @@ func PlayerSymbol(player int) string {
 	return "O"
 }
 
-func CheckWin(player int) bool {
+func CheckWin(player int, Board [3][3]string) bool {
 	symbol := PlayerSymbol(player)
 	// Check rows
 	for i := 0; i < 3; i++ {
