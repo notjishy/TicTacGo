@@ -59,6 +59,7 @@ func Play(playerCount int) {
 		}
 		player = switchPlayer(playerCount, player)
 	}
+	utils.PrintBoard()
 	fmt.Println("It's a tie!")
 }
 
