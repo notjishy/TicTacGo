@@ -7,8 +7,8 @@ import (
 	"tictacgo/utils"
 )
 
-var activeSectorRow = 0
-var activeSectorCol = 0
+var ActiveSectorRow = 0
+var ActiveSectorCol = 0
 
 func Play(playerCount int) {
 	InitializeSuperBoard()
@@ -16,11 +16,11 @@ func Play(playerCount int) {
 	availableMoves := 81
 	for availableMoves > 0 {
 		if player == 1 || (playerCount == 2 && player == 2) {
-			PrintSuperBoard()
+			PrintSuperBoard(availableMoves)
 			if availableMoves == 81 {
 				getInitialMove()
 			} else {
-				getPlayerMove(player, activeSectorRow, activeSectorCol)
+				getPlayerMove(player)
 			}
 		} else {
 			getComputerMove()
@@ -44,33 +44,35 @@ func getInitialMove() {
 		getInitialMove()
 		return
 	}
-	getPlayerMove(1, sectorRow, sectorCol)
+	ActiveSectorRow = sectorRow
+	ActiveSectorCol = sectorCol
+	getPlayerMove(1)
 }
 
-func getPlayerMove(player, sectorRow, sectorCol int) {
+func getPlayerMove(player int) {
 	fmt.Printf("Player %d, enter your move (e.g., A1, B2): ", player)
 	var move string
 	fmt.Scan(&move)
 	row, col, valid := parseMove(move)
-	if !valid || GameBoard.Cells[sectorRow][sectorCol].Cells[row][col] != " " {
+	if !valid || GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] != " " {
 		fmt.Println("Invalid move. Try again.")
-		getPlayerMove(player, sectorRow, sectorCol)
+		getPlayerMove(player)
 		return
 	}
-	GameBoard.Cells[sectorRow][sectorCol].Cells[row][col] = utils.PlayerSymbol(player)
-	activeSectorRow = row
-	activeSectorCol = col
+	GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] = utils.PlayerSymbol(player)
+	ActiveSectorRow = row
+	ActiveSectorCol = col
 }
 
 func getComputerMove() {
 	for {
 		row := rand.Intn(3)
 		col := rand.Intn(3)
-		if GameBoard.Cells[activeSectorRow][activeSectorCol].Cells[row][col] == " " {
-			GameBoard.Cells[activeSectorRow][activeSectorCol].Cells[row][col] = "O"
+		if GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] == " " {
+			GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] = "O"
 
-			activeSectorRow = row
-			activeSectorCol = col
+			ActiveSectorRow = row
+			ActiveSectorCol = col
 			return
 		}
 	}

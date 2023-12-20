@@ -13,6 +13,14 @@ const (
 	cols    = 3
 )
 
+var (
+	player1 = color.Red
+	player2 = color.Cyan
+	standard = color.Blue
+	accent = color.White
+	active = color.Green
+)
+
 var GameBoard SuperBoard
 
 type SuperBoard struct {
@@ -37,12 +45,10 @@ func InitializeSuperBoard() {
 }
 
 // prints the SuperBoard with sub-boards
-func PrintSuperBoard() {
-	subHorDivider := color.InBlue("   +---+---+---") + color.InWhite("|") + color.InBlue("---+---+---") + color.InWhite("|") + color.InBlue("---+---+---+")
-
+func PrintSuperBoard(availableMoves int) {
 	// print the top row with column numbers for each super board
 	fmt.Printf("\n     1   2   3 | 1   2   3 | 1   2   3\n")
-	fmt.Println(subHorDivider)
+	printSubHorDivider(0, availableMoves)
 
 	// iterate over each row of the SuperBoard
 	for i := 0; i < rows; i++ {
@@ -57,13 +63,15 @@ func PrintSuperBoard() {
 			// iterate over each column of the SuperBoard
 			for j := 0; j < cols; j++ {
 				// print the sub-board for the current row and column
-				printSubBoard(GameBoard.Cells[i][j].Cells[subRow], j)
+				color := standard
+				if (i == ActiveSectorRow && j == ActiveSectorCol && availableMoves != 81) { color = active }
+				printSubBoard(GameBoard.Cells[i][j].Cells[subRow], j, color)
 			}
 			fmt.Println() // move to the next line after printing a sub-row
 
 			// print the horizontal dividers between sub-rows
 			if subRow < subRows-1 {
-				fmt.Println(subHorDivider)
+				printSubHorDivider(i, availableMoves)
 			}
 		}
 
@@ -72,26 +80,62 @@ func PrintSuperBoard() {
 			fmt.Println(color.InBold("  ===+===+==== | ====+==== | ====+===+==="))
 		}
 	}
-	fmt.Println(subHorDivider + "\n") // move to the next line after printing the SuperBoard
+	printSubHorDivider(3, availableMoves)
+	fmt.Println("") // move to the next line after printing the SuperBoard
+}
+
+func printSubHorDivider(num int, availableMoves int) {
+	first := standard
+	second := standard
+	third := standard
+
+	if (availableMoves != 81) {
+		if (ActiveSectorRow == 0 && num < 1) {
+			if (ActiveSectorCol == 0) {
+				first = active
+			} else if (ActiveSectorCol == 1) {
+				second = active
+			} else {
+				third = active
+			}
+		} else if (ActiveSectorRow == 1 && num == 1) {
+			if (ActiveSectorCol == 0) {
+				first = active
+			} else if (ActiveSectorCol == 1) {
+				second = active
+			} else {
+				third = active
+			}
+		} else if (ActiveSectorRow == 2 && num > 1) {
+			if (ActiveSectorCol == 0) {
+				first = active
+			} else if (ActiveSectorCol == 1) {
+				second = active
+			} else {
+				third = active
+			}
+		}
+	}
+	fmt.Println(color.With(first, "   +---+---+---") + color.With(accent, "|") + color.With(second, "---+---+---") + color.With(accent, "|") + color.With(third, "---+---+---+"))
 }
 
 // prints a sub-board
-func printSubBoard(subBoardRow [3]string, j int) {
+func printSubBoard(subBoardRow [3]string, j int, sectorColor string) {
 
 	for i, cell := range subBoardRow {
 		cellPart := ""
 		if i < 1 && j > 0 {
-			cellPart = color.InWhite(" | %-3s")
+			cellPart = color.With(accent, " | %-3s")
 		} else {
-			cellPart = color.InBlue(" | %-3s")
+			cellPart = color.With(sectorColor, " | %-3s")
 		}
 
 		if strings.HasSuffix(cell, "X") {
-			fmt.Printf(cellPart, color.InRed(cell))
+			fmt.Printf(cellPart, color.With(player1, cell))
 		} else {
-			fmt.Printf(cellPart, color.InCyan(cell))
+			fmt.Printf(cellPart, color.With(player2, cell))
 		}
 
-		if j > 1 && i > 1 { fmt.Print(color.InBlue(" |")) }
+		if j > 1 && i > 1 { fmt.Print(color.With(sectorColor, " |")) }
 	}
 }
