@@ -24,12 +24,12 @@ func PrintBoard() {
 			if strings.HasSuffix(cell, "X") {
 				fmt.Printf(" | %s", color.InRed(cell))
 			} else {
-				fmt.Printf(" | %s", color.InBlue(cell))
+				fmt.Printf(" | %s", color.InCyan(cell))
 			}
 		}
 		fmt.Println(" |")
 		if i < 2 {
-			fmt.Println("  ---+---+---")
+			fmt.Println("   ---+---+---")
 		}
 	}
 	fmt.Println()

@@ -1,5 +1,12 @@
 package utils
 
+func SwitchPlayer(playerCount int, player int) int {
+	if player == 1 {
+		return 2
+	}
+	return 1
+}
+
 func PlayerSymbol(player int) string {
 	if player == 1 {
 		return "X"

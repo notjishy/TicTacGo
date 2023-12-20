@@ -45,7 +45,7 @@ func main() {
 		if selectedMode == "r" {
 			regular.Play(playerCount)
 		} else if (selectedMode == "s") {
-			super.Play()
+			super.Play(playerCount)
 		}
 	}
 }

@@ -7,13 +7,6 @@ import (
 	"tictacgo/utils"
 )
 
-func switchPlayer(playerCount int, player int) int {
-	if player == 1 {
-		return 2
-	}
-	return 1
-}
-
 func getPlayerMove(player int) {
 	fmt.Printf("Player %d, enter your move (e.g., A1, B2): ", player)
 	var move string
@@ -57,7 +50,7 @@ func Play(playerCount int) {
 				return
 			}
 		}
-		player = switchPlayer(playerCount, player)
+		player = utils.SwitchPlayer(playerCount, player)
 	}
 	PrintBoard()
 	fmt.Println("It's a tie!")
