@@ -3,6 +3,7 @@ package super
 import (
 	"fmt"
 	"strings"
+	"math/rand"
 	"tictacgo/utils"
 )
 
@@ -21,8 +22,12 @@ func Play(playerCount int) {
 			} else {
 				getPlayerMove(player, activeSectorRow, activeSectorCol)
 			}
+		} else {
+			getComputerMove()
 		}
 		availableMoves--
+		// @TODO
+		// win check logic
 		player = utils.SwitchPlayer(playerCount, player)
 	}
 
@@ -55,6 +60,20 @@ func getPlayerMove(player, sectorRow, sectorCol int) {
 	GameBoard.Cells[sectorRow][sectorCol].Cells[row][col] = utils.PlayerSymbol(player)
 	activeSectorRow = row
 	activeSectorCol = col
+}
+
+func getComputerMove() {
+	for {
+		row := rand.Intn(3)
+		col := rand.Intn(3)
+		if GameBoard.Cells[activeSectorRow][activeSectorCol].Cells[row][col] == " " {
+			GameBoard.Cells[activeSectorRow][activeSectorCol].Cells[row][col] = "O"
+
+			activeSectorRow = row
+			activeSectorCol = col
+			return
+		}
+	}
 }
 
 func parseMove(move string) (int, int, bool) {
