@@ -115,7 +115,7 @@ func parseMove(move string) (int, int, bool) {
 
 func updateGameState(row int, col int) {
 	availableMoves--
-	if availableMoves < 76 {
+	if availableMoves <= 76 {
 		if utils.CheckWin(player, GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells) {
 			for i := 0; i < 3; i++ {
 				for j := 0; j < 3; j++ {
