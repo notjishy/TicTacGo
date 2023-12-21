@@ -31,6 +31,15 @@ func Play(playerCount int) {
 		} else {
 			getComputerMove()
 		}
+
+		if availableBoards < 7 {
+			if utils.CheckWin(player, regular.Board) {
+				PrintSuperBoard(availableMoves, sectorBlocked)
+				fmt.Printf("Player %d wins!\n", player)
+				return
+			}
+		}
+
 		player = utils.SwitchPlayer(playerCount, player)
 	}
 }
