@@ -70,24 +70,34 @@ func getPlayerMove() {
 		return
 	}
 	GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] = utils.PlayerSymbol(player)
-	updateGameBoard(row, col)
-	
-	ActiveSectorRow = row
-	ActiveSectorCol = col
+	updateGameState(row, col)
 }
 
 func getComputerMove() {
 	for {
-		row := rand.Intn(3)
-		col := rand.Intn(3)
-		if GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] == " " {
-			GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] = "O"
-			
-			updateGameBoard(row, col)
-
-			ActiveSectorRow = row
-			ActiveSectorCol = col
+		if !sectorBlocked {
+			for {
+				row := rand.Intn(3)
+				col := rand.Intn(3)
+				if GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] == " " {
+					GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] = "O"
+					
+					updateGameState(row, col)
+					return
+				}
+			}
 			return
+		} else {
+			for {
+				row := rand.Intn(3)
+				col := rand.Intn(3)
+				if regular.Board[row][col] == " " {
+					ActiveSectorRow = row
+					ActiveSectorCol = col
+					sectorBlocked = false
+					break
+				}
+			}
 		}
 	}
 }
@@ -103,7 +113,7 @@ func parseMove(move string) (int, int, bool) {
 	return row, col, row >= 0 && row < 3 && col >= 0 && col < 3
 }
 
-func updateGameBoard(row int, col int) {
+func updateGameState(row int, col int) {
 	availableMoves--
 	if availableMoves < 76 {
 		if utils.CheckWin(player, GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells) {
@@ -124,4 +134,7 @@ func updateGameBoard(row int, col int) {
 			sectorBlocked = true
 		} else { sectorBlocked = false }
 	}
+
+	ActiveSectorRow = row
+	ActiveSectorCol = col
 }
