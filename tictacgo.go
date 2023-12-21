@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 	"strings"
-	"tictacgo/modes/regular"
-	"tictacgo/modes/super"
+	"tictacgo/regular"
+	"tictacgo/super"
 )
 
 func askMode() string {
