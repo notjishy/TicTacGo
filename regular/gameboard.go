@@ -17,7 +17,7 @@ func InitializeBoard() {
 }
 
 func PrintBoard() {
-	fmt.Println("\n   1   2   3")
+	fmt.Println("\n    1   2   3")
 	for i, row := range Board {
 		fmt.Print(string('a'+i))
 		for _, cell := range row {
