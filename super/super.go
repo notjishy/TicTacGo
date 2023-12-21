@@ -8,18 +8,19 @@ import (
 	"tictacgo/regular"
 )
 
-var player = 1
-
-var ActiveSectorRow = 0
-var ActiveSectorCol = 0
-
-var sectorBlocked = false
-
-var availableMoves = 81
-var availableBoards = 9
+var player int
+var ActiveSectorRow int
+var ActiveSectorCol int
+var sectorBlocked bool
+var availableMoves int
+var availableBoards int
 
 func Play(playerCount int) {
 	InitializeSuperBoard()
+	availableMoves = 81
+	availableBoards = 9
+	player = 1
+	sectorBlocked = false
 	for availableMoves > 0 {
 		if player == 1 || (playerCount == 2 && player == 2) {
 			PrintSuperBoard(availableMoves, sectorBlocked)
@@ -42,6 +43,8 @@ func Play(playerCount int) {
 
 		player = utils.SwitchPlayer(playerCount, player)
 	}
+	PrintSuperBoard(availableMoves, sectorBlocked)
+	fmt.Println("It's a tie!")
 }
 
 func getSectorMove() {
@@ -128,9 +131,15 @@ func updateGameState(row int, col int) {
 			}
 			regular.Board[ActiveSectorRow][ActiveSectorCol] = utils.PlayerSymbol(player)
 			availableBoards--
+		} else {
+			openSubSpaces := GetEmptySpaces()
+			if openSubSpaces == 0 {
+				regular.Board[ActiveSectorRow][ActiveSectorCol] = "-"
+			}
+	
 		}
-
-		if regular.Board[row][col] == "X" || regular.Board[row][col] == "O" {
+		
+		if regular.Board[row][col] == "X" || regular.Board[row][col] == "O" || regular.Board[row][col] == "-" {
 			sectorBlocked = true
 		} else { sectorBlocked = false }
 	}

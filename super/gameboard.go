@@ -20,6 +20,7 @@ var (
 	standard = color.Blue
 	accent = color.White
 	active = color.Green
+	tie = color.Yellow
 )
 
 var GameBoard SuperBoard
@@ -45,6 +46,16 @@ func InitializeSuperBoard() {
 	}
 
 	regular.InitializeBoard()
+}
+
+func GetEmptySpaces() int {
+	openSubSpaces := 0
+	for i := 0; i < 3; i++ {
+		for j := 0; j < 3; j++ {
+			if GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[i][j] == " " { openSubSpaces++ }
+		}
+	}
+	return openSubSpaces
 }
 
 // prints the SuperBoard with sub-boards
@@ -82,6 +93,8 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool) {
 					color = player1
 				} else if regular.Board[i][j] == "O" {
 					color = player2
+				} else if regular.Board[i][j] == "-" {
+					color = tie
 				}
 				printSubBoard(GameBoard.Cells[i][j].Cells[subRow], i, j, color)
 			}
@@ -126,6 +139,8 @@ func printSubHorDivider(i int, regColsTaken []int, availableMoves int, sectorBlo
 					blockedSectorColor = player1
 				} else if regular.Board[i][regColsTaken[j]] == "O" {
 					blockedSectorColor = player2
+				} else if regular.Board[i][regColsTaken[j]] == "-" {
+					blockedSectorColor = tie
 				}
 		
 				switch regColsTaken[j] {
@@ -158,6 +173,9 @@ func printSubBoard(subBoardRow [3]string, i int, j int, sectorColor string) {
 		} else if regular.Board[i][j] == "O" {
 			fmt.Printf(cellPart, color.With(player2, cell))
 			if j > 1 && x > 1 { fmt.Print(color.With(player2, " |")) }
+		} else if regular.Board[i][j] == "-" {
+			fmt.Printf(cellPart, color.With(tie, cell))
+			if j > 1 && x > 1 { fmt.Print(color.With(tie, " |")) }
 		} else {
 			if strings.HasSuffix(cell, "X") {
 				fmt.Printf(cellPart, color.With(player1, cell))
