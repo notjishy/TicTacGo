@@ -59,7 +59,7 @@ func GetEmptySpaces() int {
 }
 
 // prints the SuperBoard with sub-boards
-func PrintSuperBoard(availableMoves int, sectorBlocked bool) {
+func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 	var regColsTaken []int
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
@@ -87,7 +87,7 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool) {
 			for j := 0; j < cols; j++ {
 				// print the sub-board for the current row and column
 				color := standard
-				if (i == ActiveSectorRow && j == ActiveSectorCol && availableMoves != 81 && !sectorBlocked) {
+				if (i == ActiveSectorRow && j == ActiveSectorCol && availableMoves != 81 && !sectorBlocked && !gameEnd) {
 					color = active
 				} else if regular.Board[i][j] == "X" {
 					color = player1
@@ -120,7 +120,7 @@ func printSubHorDivider(i int, regColsTaken []int, availableMoves int, sectorBlo
 	second := standard
 	third := standard
 
-	if (availableMoves < 81 && !sectorBlocked) {
+	if (availableMoves < 81 && !sectorBlocked && !gameEnd) {
 		if ((ActiveSectorRow == 0 && i < 1) || (ActiveSectorRow == 1 && i == 1) || (ActiveSectorRow == 2 && i > 1)) {
 			if (ActiveSectorCol == 0) {
 				first = active

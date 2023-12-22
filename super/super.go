@@ -11,9 +11,11 @@ import (
 var player int
 var ActiveSectorRow int
 var ActiveSectorCol int
-var sectorBlocked bool
 var availableMoves int
 var availableBoards int
+
+var sectorBlocked bool
+var gameEnd bool = false
 
 func Play(playerCount int) {
 	InitializeSuperBoard()
@@ -23,7 +25,7 @@ func Play(playerCount int) {
 	sectorBlocked = false
 	for availableMoves > 0 {
 		if player == 1 || (playerCount == 2 && player == 2) {
-			PrintSuperBoard(availableMoves, sectorBlocked)
+			PrintSuperBoard(availableMoves, sectorBlocked, gameEnd)
 			if availableMoves == 81 || sectorBlocked {
 				getSectorMove()
 			} else {
@@ -34,8 +36,9 @@ func Play(playerCount int) {
 		}
 
 		if availableBoards < 7 {
-			if utils.CheckWin(player, regular.Board) {
-				PrintSuperBoard(availableMoves, sectorBlocked)
+			gameEnd = utils.CheckWin(player, regular.Board)
+			if gameEnd {
+				PrintSuperBoard(availableMoves, sectorBlocked, gameEnd)
 				fmt.Printf("Player %d wins!\n", player)
 				return
 			}
@@ -43,7 +46,7 @@ func Play(playerCount int) {
 
 		player = utils.SwitchPlayer(playerCount, player)
 	}
-	PrintSuperBoard(availableMoves, sectorBlocked)
+	PrintSuperBoard(availableMoves, sectorBlocked, gameEnd)
 	fmt.Println("It's a tie!")
 }
 
