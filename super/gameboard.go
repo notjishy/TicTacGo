@@ -18,7 +18,7 @@ var (
 	player1 = color.Red
 	player2 = color.Cyan
 	standard = color.Blue
-	accent = color.White
+	accent = color.Reset
 	active = color.Green
 	tie = color.Yellow
 )
