@@ -5,11 +5,19 @@ import (
 	"strings"
 	"tictacgo/regular"
 	"tictacgo/super"
+	"github.com/TwiN/go-color"
 )
 
 func askMode() string {
     var inputChar string
-    fmt.Print("Which mode would you like to play? (R/Regular | S/Super | Q/Quit) ")
+	fmt.Print("\n\n _______ _   _______          _____\n",
+	"|__   __(_) |__   __|        / ____|\n",
+	"   | |   _  ___| | __ _  ___| |  __  ___\n",
+	"   | |  | |/ __| |/ _` |/ __| | |_ |/ _ \\\n",
+	"   | |  | | (__| | (_| | (__| |__| | (_) |\n",
+	"   |_|  |_|\\___|_|\\__,_|\\___|\\_____|\\___/\n\n\n\n")
+    fmt.Print("               Select a Mode:\n",
+			(color.InGreen("  (R)egular  ") + color.With(color.Reset, " ||  ")) + color.InCyan(" (S)uper  ") + color.With(color.Reset, " ||  ") + color.InRed(" (Q)uit\n\n"))
     fmt.Scan(&inputChar)
     inputChar = strings.ToLower(inputChar)
 
@@ -23,7 +31,7 @@ func askMode() string {
 
 func askPlayerCount() int {
 	var inputNum int
-	fmt.Print("How many players will there be? (1/2) ")
+	fmt.Print("\n(1) Player   ||    (2) Players\n")
 	fmt.Scan(&inputNum)
 
 	if inputNum != 1 && inputNum != 2 {
