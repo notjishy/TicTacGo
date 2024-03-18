@@ -58,6 +58,16 @@ func GetEmptySpaces() int {
 	return openSubSpaces
 }
 
+func GetEmptySubBoards() int {
+	openSubBoards := 0
+	for i := 0; i < 3; i++ {
+		for j := 0; j < 3; j++ {
+			if regular.Board[i][j] == " " { openSubBoards++ }
+		}
+	}
+	return openSubBoards
+}
+
 // prints the SuperBoard with sub-boards
 func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 	var regColsTaken []int

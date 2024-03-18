@@ -121,6 +121,8 @@ func parseMove(move string) (int, int, bool) {
 
 func updateGameState(row int, col int) {
 	availableMoves--
+
+	openSubBoards := GetEmptySubBoards()
 	if availableMoves <= 76 {
 		if utils.CheckWin(player, GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells) {
 			for i := 0; i < 3; i++ {
@@ -139,14 +141,15 @@ func updateGameState(row int, col int) {
 			if openSubSpaces == 0 {
 				regular.Board[ActiveSectorRow][ActiveSectorCol] = "-"
 			}
-	
 		}
 		
-		if regular.Board[row][col] == "X" || regular.Board[row][col] == "O" || regular.Board[row][col] == "-" {
+		if ((regular.Board[row][col] == "X" || regular.Board[row][col] == "O" || regular.Board[row][col] == "-") && openSubBoards >= 1) {
 			sectorBlocked = true
 		} else { sectorBlocked = false }
 	}
 
-	ActiveSectorRow = row
-	ActiveSectorCol = col
+	if openSubBoards >= 1 {
+		ActiveSectorRow = row
+		ActiveSectorCol = col
+	}
 }
