@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/TwiN/go-color"
+	"github.com/inancgumus/screen"
 )
 
 // define the board
@@ -21,6 +22,9 @@ func InitializeBoard() {
 
 // print the board in the terminal
 func PrintBoard() {
+	// clear the screen
+	screen.Clear()
+
 	fmt.Println("\n    1   2   3")
 	// print out 1 row at a time
 	for i, row := range Board {

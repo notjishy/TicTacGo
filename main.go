@@ -6,6 +6,7 @@ import (
 	"tictacgo/gamemodes"
 
 	"github.com/TwiN/go-color"
+	"github.com/inancgumus/screen"
 )
 
 func main() {
@@ -29,6 +30,9 @@ func main() {
 
 // main menu screen
 func askMode() string {
+	// clear the screen
+	screen.Clear()
+
 	var modeInput string
 	// print menu
 	fmt.Print("\n\n _______ _   _______          _____\n",

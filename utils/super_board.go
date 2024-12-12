@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/TwiN/go-color"
+	"github.com/inancgumus/screen"
 )
 
 const (
@@ -83,6 +84,9 @@ func GetEmptySubBoards() int {
 
 // prints the SuperBoard with sub-boards
 func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
+	// clear the screen
+	screen.Clear()
+
 	var regColsTaken []int
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
