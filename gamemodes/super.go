@@ -1,4 +1,4 @@
-package super
+package gamemodes
 
 import (
 	"fmt"
@@ -25,10 +25,9 @@ var availableBoards int
 // game will end when this becomes true
 var gameEnd bool = false
 
-func Play(playerCount int) {
+func PlaySuper(playerCount int) {
 	utils.InitializeSuperBoard()
 	// set variables at start of game
-	utils.SectorBlocked = false
 	availableMoves = 81
 	availableBoards = 9
 
@@ -39,7 +38,7 @@ func Play(playerCount int) {
 		if player == 1 || (playerCount == 2 && player == 2) {
 			utils.PrintSuperBoard(availableMoves, utils.SectorBlocked, gameEnd)
 			// ask player which board to play in if the current selected board is no longer in play (has been won/tied)
-			if availableMoves == 81 || utils.SectorBlocked {
+			if availableMoves == 81 || utils.Board[row][col] != " " {
 				utils.GetSectorMove(player, availableMoves, availableBoards)
 			}
 			// acquire move from player
@@ -50,12 +49,12 @@ func Play(playerCount int) {
 		}
 
 		// update gameboard state (checks for wins in remaining boards, updates the active board, decrements remining moves and boards)
-		availableMoves, availableBoards = utils.UpdateGameState(row, col, player, availableMoves, availableBoards)
+		availableMoves, availableBoards = utils.ProcessMoveAndUpdateGameState(row, col, player, availableMoves, availableBoards)
 
 		// check main board for win condition.
 		// if >= 7 boards remaining, no need to check as a win is impossible there
 		if availableBoards < 7 {
-			if utils.CheckWin(player, utils.Board) {
+			if utils.CheckForWin(player, utils.Board) {
 				utils.PrintSuperBoard(availableMoves, utils.SectorBlocked, gameEnd)
 				fmt.Printf("Player %d wins!\n", player)
 				// force game to end if there is winner

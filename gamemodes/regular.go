@@ -1,4 +1,4 @@
-package regular
+package gamemodes
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ var player int
 // maximum number of turns in the game before it force ends
 var availableMoves int
 
-func Play(playerCount int) {
+func PlayRegular(playerCount int) {
 	player = 1
 	availableMoves = 9
 	utils.InitializeBoard()
@@ -26,9 +26,9 @@ func Play(playerCount int) {
 		if player == 1 || (playerCount == 2 && player == 2) {
 			utils.PrintBoard()
 			// acquire move from player.
-			utils.GetRegPlayerMove(player, utils.Board)
+			utils.GetRegularPlayerMove(player, utils.Board)
 		} else {
-			utils.GetRegComputerMove()
+			utils.GetRegularComputerMove()
 		}
 		// decrement moves remaining
 		availableMoves--
@@ -36,7 +36,7 @@ func Play(playerCount int) {
 		// check board for win conditions.
 		// if moves is >= 5, no need to check as it would be impossible
 		if availableMoves < 5 {
-			if utils.CheckWin(player, utils.Board) {
+			if utils.CheckForWin(player, utils.Board) {
 				utils.PrintBoard()
 				fmt.Printf("Player %d wins!\n", player)
 				// force end game if someone won

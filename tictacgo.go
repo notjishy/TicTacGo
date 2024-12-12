@@ -3,8 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
-	"tictacgo/regular"
-	"tictacgo/super"
+	"tictacgo/gamemodes"
 
 	"github.com/TwiN/go-color"
 )
@@ -21,9 +20,9 @@ func main() {
 
 		// run chosen game mode
 		if selectedMode == "r" {
-			regular.Play(playerCount)
+			gamemodes.PlayRegular(playerCount)
 		} else if selectedMode == "s" {
-			super.Play(playerCount)
+			gamemodes.PlaySuper(playerCount)
 		}
 	}
 }
