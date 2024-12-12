@@ -5,18 +5,11 @@ import (
 	"tictacgo/utils"
 )
 
-// initialize variables
-// `player` variable indicates which player's turn it is,
-// starting with player 1 going first
-var player int
-
-// maximum number of turns in the game before it force ends
-var availableMoves int
-
 func PlayRegular(playerCount int) {
+	utils.InitializeBoard()
+	// set variables at start of game
 	player = 1
 	availableMoves = 9
-	utils.InitializeBoard()
 
 	// loop game until no more moves left
 	// if availableMoves runs out, the game is a tie
@@ -28,7 +21,7 @@ func PlayRegular(playerCount int) {
 			// acquire move from player.
 			utils.GetRegularPlayerMove(player, utils.Board)
 		} else {
-			utils.GetRegularComputerMove()
+			utils.GetRegularComputerMove(player)
 		}
 		// decrement moves remaining
 		availableMoves--

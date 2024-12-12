@@ -6,17 +6,10 @@ import (
 )
 
 // initialize variables
-// `player` variable indicates which player's turn it is.
-// defaulting to player 1 goes first.
-var player int = 1
-
 // keep track of where moves are being made
 // used later when gameboard is updated
 var row int
 var col int
-
-// maximum amount of moves until game ends in a tie
-var availableMoves int
 
 // number of boards in the game (it will always print out 9 boards,
 // this just is just to track how many are left in play)
@@ -28,6 +21,7 @@ var gameEnd bool = false
 func PlaySuper(playerCount int) {
 	utils.InitializeSuperBoard()
 	// set variables at start of game
+	player = 1
 	availableMoves = 81
 	availableBoards = 9
 

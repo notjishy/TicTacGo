@@ -22,13 +22,13 @@ func GetRegularPlayerMove(player int, board [3][3]string) {
 }
 
 // decide the move selection for the computer in the Regular mode
-func GetRegularComputerMove() {
+func GetRegularComputerMove(player int) {
 	for {
 		row := rand.Intn(3)
 		col := rand.Intn(3)
 		if Board[row][col] == " " {
 			// set the move to the board
-			Board[row][col] = GetPlayerSymbol
+			Board[row][col] = GetPlayerSymbol(player)
 			return
 		}
 	}

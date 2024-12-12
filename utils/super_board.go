@@ -39,19 +39,23 @@ type SubBoard struct {
 
 // initializes the SuperBoard with empty spaces
 func InitializeSuperBoard() {
-	for i := 0; i < rows; i++ {
-		for j := 0; j < cols; j++ {
-			for x := 0; x < subRows; x++ {
-				for y := 0; y < subCols; y++ {
-					GameBoard.Cells[i][j].Cells[x][y] = " "
-				}
-			}
-		}
-	}
+    // Iterate over each cell in a flattened index
+    totalCells := rows * cols * subRows * subCols
+    for idx := 0; idx < totalCells; idx++ {
+        // Calculate the respective indices for i, j, x, y
+        i := idx / (cols * subRows * subCols)
+        j := (idx / (subRows * subCols)) % cols
+        x := (idx / subCols) % subRows
+        y := idx % subCols
 
-	InitializeBoard()
+        // Set the cell to empty space
+        GameBoard.Cells[i][j].Cells[x][y] = " "
+    }
+
+    InitializeBoard()
 }
 
+// count how many empty spaces remaining in a subboard
 func GetEmptySpaces() int {
 	openSubSpaces := 0
 	for i := 0; i < 3; i++ {
@@ -64,6 +68,7 @@ func GetEmptySpaces() int {
 	return openSubSpaces
 }
 
+// count how many subboards remain in play
 func GetEmptySubBoards() int {
 	openSubBoards := 0
 	for i := 0; i < 3; i++ {
@@ -89,7 +94,7 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 
 	// print the top row with column numbers for each super board
 	fmt.Printf("\n     1   2   3 | 1   2   3 | 1   2   3\n")
-	printSubHorDivider(0, regColsTaken, availableMoves, sectorBlocked, gameEnd)
+	printSubHorizontalDivider(0, regColsTaken, availableMoves, sectorBlocked, gameEnd)
 
 	// iterate over each row of the SuperBoard
 	for i := 0; i < rows; i++ {
@@ -114,13 +119,13 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 				} else if Board[i][j] == "-" {
 					color = tie
 				}
-				printSubBoard(GameBoard.Cells[i][j].Cells[subRow], i, j, color)
+				printSubBoardRow(GameBoard.Cells[i][j].Cells[subRow], i, j, color)
 			}
 			fmt.Println() // move to the next line after printing a sub-row
 
 			// print the horizontal dividers between sub-rows
 			if subRow < subRows-1 {
-				printSubHorDivider(i, regColsTaken, availableMoves, sectorBlocked, gameEnd)
+				printSubHorizontalDivider(i, regColsTaken, availableMoves, sectorBlocked, gameEnd)
 			}
 		}
 
@@ -129,11 +134,11 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 			fmt.Println(color.InBold("  ===+===+==== | ====+==== | ====+===+==="))
 		}
 	}
-	printSubHorDivider(2, regColsTaken, availableMoves, sectorBlocked, gameEnd)
+	printSubHorizontalDivider(2, regColsTaken, availableMoves, sectorBlocked, gameEnd)
 	fmt.Println("") // move to the next line after printing the SuperBoard
 }
 
-func printSubHorDivider(i int, regColsTaken []int, availableMoves int, sectorBlocked bool, gameEnd bool) {
+func printSubHorizontalDivider(i int, regColsTaken []int, availableMoves int, sectorBlocked bool, gameEnd bool) {
 	first := standard
 	second := standard
 	third := standard
@@ -175,8 +180,8 @@ func printSubHorDivider(i int, regColsTaken []int, availableMoves int, sectorBlo
 	fmt.Println(color.With(first, "   +---+---+---") + color.With(accent, "|") + color.With(second, "---+---+---") + color.With(accent, "|") + color.With(third, "---+---+---+"))
 }
 
-// prints a sub-board
-func printSubBoard(subBoardRow [3]string, i int, j int, sectorColor string) {
+// prints respective row of a subboard
+func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
 	for x, cell := range subBoardRow {
 		cellPart := ""
 		if x < 1 && j > 0 {
