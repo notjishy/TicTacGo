@@ -5,13 +5,16 @@ import (
 	"strings"
 	"tictacgo/regular"
 	"tictacgo/super"
+
 	"github.com/TwiN/go-color"
 )
 
 func main() {
 	for {
 		selectedMode := askMode() // get input using askMode function
-		if selectedMode == "q" { break } // quits the game
+		if selectedMode == "q" {
+			break
+		} // quits the game
 
 		// get amount of players
 		playerCount := askPlayerCount()
@@ -19,7 +22,7 @@ func main() {
 		// run chosen game mode
 		if selectedMode == "r" {
 			regular.Play(playerCount)
-		} else if (selectedMode == "s") {
+		} else if selectedMode == "s" {
 			super.Play(playerCount)
 		}
 	}
@@ -30,26 +33,26 @@ func askMode() string {
 	var modeInput string
 	// print menu
 	fmt.Print("\n\n _______ _   _______          _____\n",
-	"|__   __(_) |__   __|        / ____|\n",
-	"   | |   _  ___| | __ _  ___| |  __  ___\n",
-	"   | |  | |/ __| |/ _` |/ __| | |_ |/ _ \\\n",
-	"   | |  | | (__| | (_| | (__| |__| | (_) |\n",
-	"   |_|  |_|\\___|_|\\__,_|\\___|\\_____|\\___/\n\n\n\n")
-    fmt.Print("               Select a Mode:\n",
-			(color.InGreen("  (R)egular  ") + color.With(color.Reset, " ||  ")) + color.InCyan(" (S)uper  ") + color.With(color.Reset, " ||  ") + color.InRed(" (Q)uit\n\n"))
+		"|__   __(_) |__   __|        / ____|\n",
+		"   | |   _  ___| | __ _  ___| |  __  ___\n",
+		"   | |  | |/ __| |/ _` |/ __| | |_ |/ _ \\\n",
+		"   | |  | | (__| | (_| | (__| |__| | (_) |\n",
+		"   |_|  |_|\\___|_|\\__,_|\\___|\\_____|\\___/\n\n\n\n")
+	fmt.Print("               Select a Mode:\n",
+		(color.InGreen("  (R)egular  ")+color.With(color.Reset, " ||  "))+color.InCyan(" (S)uper  ")+color.With(color.Reset, " ||  ")+color.InRed(" (Q)uit\n\n"))
 
 	// retreive input from user
-    fmt.Scan(&modeInput)
-    modeInput = strings.ToLower(modeInput)
+	fmt.Scan(&modeInput)
+	modeInput = strings.ToLower(modeInput)
 
 	// check input with mode selection
-    if modeInput != "r" && modeInput != "s" && modeInput != "q" {
-        fmt.Println("Invalid option, please choose one of the listed modes.")
-        return askMode() // recursively ask for input if no valid input
-    }
+	if modeInput != "r" && modeInput != "s" && modeInput != "q" {
+		fmt.Println("Invalid option, please choose one of the listed modes.")
+		return askMode() // recursively ask for input if no valid input
+	}
 
 	// send selected mode forward
-    return modeInput
+	return modeInput
 }
 
 // ask the user how many players (1 or 2)

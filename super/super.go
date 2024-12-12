@@ -2,154 +2,72 @@ package super
 
 import (
 	"fmt"
-	"strings"
-	"math/rand"
 	"tictacgo/utils"
-	"tictacgo/regular"
 )
 
-var player int
-var ActiveSectorRow int
-var ActiveSectorCol int
+// initialize variables
+// `player` variable indicates which player's turn it is.
+// defaulting to player 1 goes first.
+var player int = 1
+
+// keep track of where moves are being made
+// used later when gameboard is updated
+var row int
+var col int
+
+// maximum amount of moves until game ends in a tie
 var availableMoves int
+
+// number of boards in the game (it will always print out 9 boards,
+// this just is just to track how many are left in play)
 var availableBoards int
 
-var sectorBlocked bool
+// game will end when this becomes true
 var gameEnd bool = false
 
 func Play(playerCount int) {
-	InitializeSuperBoard()
+	utils.InitializeSuperBoard()
+	// set variables at start of game
+	utils.SectorBlocked = false
 	availableMoves = 81
 	availableBoards = 9
-	player = 1
-	sectorBlocked = false
+
+	// loop through game until until no more moves left
+	// if no more moves, game is a tie
 	for availableMoves > 0 {
+		// only ask for player's move if the current turn is for an actual person.
+		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
 		if player == 1 || (playerCount == 2 && player == 2) {
-			PrintSuperBoard(availableMoves, sectorBlocked, gameEnd)
-			if availableMoves == 81 || sectorBlocked {
-				getSectorMove()
+			utils.PrintSuperBoard(availableMoves, utils.SectorBlocked, gameEnd)
+			// ask player which board to play in if the current selected board is no longer in play (has been won/tied)
+			if availableMoves == 81 || utils.SectorBlocked {
+				utils.GetSectorMove(player, availableMoves, availableBoards)
 			} else {
-				getPlayerMove()
+				// acquire move from player. number of boards and moves left is also updated
+				row, col = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
 			}
 		} else {
-			getComputerMove()
+			// acquire move from computer, also updated number of boards and moves left
+			row, col = utils.GetSuperComputerMove(player, availableMoves, availableBoards)
 		}
 
+		// update gameboard state (checks for wins in remaining boards, updates the active board, decrements remining moves and boards)
+		availableMoves, availableBoards = utils.UpdateGameState(row, col, player, availableMoves, availableBoards)
+
+		// check main board for win condition.
+		// if >= 7 boards remaining, no need to check as a win is impossible there
 		if availableBoards < 7 {
-			gameEnd = utils.CheckWin(player, regular.Board)
-			if gameEnd {
-				PrintSuperBoard(availableMoves, sectorBlocked, gameEnd)
+			if utils.CheckWin(player, utils.Board) {
+				utils.PrintSuperBoard(availableMoves, utils.SectorBlocked, gameEnd)
 				fmt.Printf("Player %d wins!\n", player)
+				// force game to end if there is winner
 				return
 			}
 		}
 
+		// swap to next player after turn is finished
 		player = utils.SwitchPlayer(playerCount, player)
 	}
-	PrintSuperBoard(availableMoves, sectorBlocked, gameEnd)
+	utils.PrintSuperBoard(availableMoves, utils.SectorBlocked, gameEnd)
 	fmt.Println("It's a tie!")
-}
-
-func getSectorMove() {
-	fmt.Printf("Player %d, which sector would you like to move in (e.g., A1, B2, <A - C><1 - 3>): ", player)
-	var move string
-	fmt.Scan(&move)
-	sectorRow, sectorCol, sectorValid := parseMove(move)
-	if !sectorValid || regular.Board[sectorRow][sectorCol] != " " {
-		fmt.Println("Invalid sector, Try again.")
-		getSectorMove()
-		return
-	}
-	ActiveSectorRow = sectorRow
-	ActiveSectorCol = sectorCol
-	getPlayerMove()
-}
-
-func getPlayerMove() {
-	fmt.Printf("Player %d, enter your move (e.g., A1, B2): ", player)
-	var move string
-	fmt.Scan(&move)
-	row, col, valid := parseMove(move)
-	if !valid || GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] != " " {
-		fmt.Println("Invalid move. Try again.")
-		getPlayerMove()
-		return
-	}
-	GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] = utils.PlayerSymbol(player)
-	updateGameState(row, col)
-}
-
-func getComputerMove() {
-	for {
-		if !sectorBlocked {
-			for {
-				row := rand.Intn(3)
-				col := rand.Intn(3)
-				if GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] == " " {
-					GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] = "O"
-					
-					updateGameState(row, col)
-					return
-				}
-			}
-			return
-		} else {
-			for {
-				row := rand.Intn(3)
-				col := rand.Intn(3)
-				if regular.Board[row][col] == " " {
-					ActiveSectorRow = row
-					ActiveSectorCol = col
-					sectorBlocked = false
-					break
-				}
-			}
-		}
-	}
-}
-
-func parseMove(move string) (int, int, bool) {
-	move = strings.ToLower(move)
-
-	if len(move) != 2 {
-		return 0, 0, false
-	}
-	row := int(move[0] - 'a')
-	col := int(move[1] - '1')
-	return row, col, row >= 0 && row < 3 && col >= 0 && col < 3
-}
-
-func updateGameState(row int, col int) {
-	availableMoves--
-
-	openSubBoards := GetEmptySubBoards()
-	if availableMoves <= 76 {
-		if utils.CheckWin(player, GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells) {
-			for i := 0; i < 3; i++ {
-				for j := 0; j < 3; j++ {
-					if GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[i][j] == " " {
-						availableMoves--
-
-						GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[i][j] = "-"
-					}
-				}
-			}
-			regular.Board[ActiveSectorRow][ActiveSectorCol] = utils.PlayerSymbol(player)
-			availableBoards--
-		} else {
-			openSubSpaces := GetEmptySpaces()
-			if openSubSpaces == 0 {
-				regular.Board[ActiveSectorRow][ActiveSectorCol] = "-"
-			}
-		}
-		
-		if ((regular.Board[row][col] == "X" || regular.Board[row][col] == "O" || regular.Board[row][col] == "-") && openSubBoards >= 1) {
-			sectorBlocked = true
-		} else { sectorBlocked = false }
-	}
-
-	if openSubBoards >= 1 {
-		ActiveSectorRow = row
-		ActiveSectorCol = col
-	}
 }

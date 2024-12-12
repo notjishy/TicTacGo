@@ -1,10 +1,10 @@
-package super
+package utils
 
 import (
 	"fmt"
 	"strings"
+
 	"github.com/TwiN/go-color"
-	"tictacgo/regular"
 )
 
 const (
@@ -15,13 +15,17 @@ const (
 )
 
 var (
-	player1 = color.Red
-	player2 = color.Cyan
+	player1  = color.Red
+	player2  = color.Cyan
 	standard = color.Blue
-	accent = color.Reset
-	active = color.Green
-	tie = color.Yellow
+	accent   = color.Reset
+	active   = color.Green
+	tie      = color.Yellow
 )
+
+var ActiveSectorRow int
+var ActiveSectorCol int
+var SectorBlocked bool
 
 var GameBoard SuperBoard
 
@@ -45,14 +49,16 @@ func InitializeSuperBoard() {
 		}
 	}
 
-	regular.InitializeBoard()
+	InitializeBoard()
 }
 
 func GetEmptySpaces() int {
 	openSubSpaces := 0
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
-			if GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[i][j] == " " { openSubSpaces++ }
+			if GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[i][j] == " " {
+				openSubSpaces++
+			}
 		}
 	}
 	return openSubSpaces
@@ -62,7 +68,9 @@ func GetEmptySubBoards() int {
 	openSubBoards := 0
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
-			if regular.Board[i][j] == " " { openSubBoards++ }
+			if Board[i][j] == " " {
+				openSubBoards++
+			}
 		}
 	}
 	return openSubBoards
@@ -73,7 +81,7 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 	var regColsTaken []int
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
-			if regular.Board[i][j] != " " {
+			if Board[i][j] != " " {
 				regColsTaken = append(regColsTaken, j)
 			}
 		}
@@ -81,7 +89,7 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 
 	// print the top row with column numbers for each super board
 	fmt.Printf("\n     1   2   3 | 1   2   3 | 1   2   3\n")
-	printSubHorDivider(0, regColsTaken, availableMoves, sectorBlocked)
+	printSubHorDivider(0, regColsTaken, availableMoves, sectorBlocked, gameEnd)
 
 	// iterate over each row of the SuperBoard
 	for i := 0; i < rows; i++ {
@@ -97,13 +105,13 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 			for j := 0; j < cols; j++ {
 				// print the sub-board for the current row and column
 				color := standard
-				if (i == ActiveSectorRow && j == ActiveSectorCol && availableMoves != 81 && !sectorBlocked && !gameEnd) {
+				if i == ActiveSectorRow && j == ActiveSectorCol && availableMoves != 81 && !sectorBlocked && !gameEnd {
 					color = active
-				} else if regular.Board[i][j] == "X" {
+				} else if Board[i][j] == "X" {
 					color = player1
-				} else if regular.Board[i][j] == "O" {
+				} else if Board[i][j] == "O" {
 					color = player2
-				} else if regular.Board[i][j] == "-" {
+				} else if Board[i][j] == "-" {
 					color = tie
 				}
 				printSubBoard(GameBoard.Cells[i][j].Cells[subRow], i, j, color)
@@ -112,7 +120,7 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 
 			// print the horizontal dividers between sub-rows
 			if subRow < subRows-1 {
-				printSubHorDivider(i, regColsTaken, availableMoves, sectorBlocked)
+				printSubHorDivider(i, regColsTaken, availableMoves, sectorBlocked, gameEnd)
 			}
 		}
 
@@ -121,20 +129,20 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 			fmt.Println(color.InBold("  ===+===+==== | ====+==== | ====+===+==="))
 		}
 	}
-	printSubHorDivider(2, regColsTaken, availableMoves, sectorBlocked)
+	printSubHorDivider(2, regColsTaken, availableMoves, sectorBlocked, gameEnd)
 	fmt.Println("") // move to the next line after printing the SuperBoard
 }
 
-func printSubHorDivider(i int, regColsTaken []int, availableMoves int, sectorBlocked bool) {
+func printSubHorDivider(i int, regColsTaken []int, availableMoves int, sectorBlocked bool, gameEnd bool) {
 	first := standard
 	second := standard
 	third := standard
 
-	if (availableMoves < 81 && !sectorBlocked && !gameEnd) {
-		if ((ActiveSectorRow == 0 && i < 1) || (ActiveSectorRow == 1 && i == 1) || (ActiveSectorRow == 2 && i > 1)) {
-			if (ActiveSectorCol == 0) {
+	if availableMoves < 81 && !sectorBlocked && !gameEnd {
+		if (ActiveSectorRow == 0 && i < 1) || (ActiveSectorRow == 1 && i == 1) || (ActiveSectorRow == 2 && i > 1) {
+			if ActiveSectorCol == 0 {
 				first = active
-			} else if (ActiveSectorCol == 1) {
+			} else if ActiveSectorCol == 1 {
 				second = active
 			} else {
 				third = active
@@ -143,23 +151,23 @@ func printSubHorDivider(i int, regColsTaken []int, availableMoves int, sectorBlo
 	}
 	if len(regColsTaken) > 0 {
 		for j := 0; j < len(regColsTaken); j++ {
-			if regular.Board[i][regColsTaken[j]] != " " {
+			if Board[i][regColsTaken[j]] != " " {
 				var blockedSectorColor string
-				if regular.Board[i][regColsTaken[j]] == "X" {
+				if Board[i][regColsTaken[j]] == "X" {
 					blockedSectorColor = player1
-				} else if regular.Board[i][regColsTaken[j]] == "O" {
+				} else if Board[i][regColsTaken[j]] == "O" {
 					blockedSectorColor = player2
-				} else if regular.Board[i][regColsTaken[j]] == "-" {
+				} else if Board[i][regColsTaken[j]] == "-" {
 					blockedSectorColor = tie
 				}
-		
+
 				switch regColsTaken[j] {
-					case 0:
-						first = blockedSectorColor
-					case 1:
-						second = blockedSectorColor
-					case 2:
-						third = blockedSectorColor
+				case 0:
+					first = blockedSectorColor
+				case 1:
+					second = blockedSectorColor
+				case 2:
+					third = blockedSectorColor
 				}
 			}
 		}
@@ -177,22 +185,30 @@ func printSubBoard(subBoardRow [3]string, i int, j int, sectorColor string) {
 			cellPart = color.With(sectorColor, " | %-3s")
 		}
 
-		if regular.Board[i][j] == "X" {
+		if Board[i][j] == "X" {
 			fmt.Printf(cellPart, color.With(player1, cell))
-			if j > 1 && x > 1 { fmt.Print(color.With(player1, " |")) }
-		} else if regular.Board[i][j] == "O" {
+			if j > 1 && x > 1 {
+				fmt.Print(color.With(player1, " |"))
+			}
+		} else if Board[i][j] == "O" {
 			fmt.Printf(cellPart, color.With(player2, cell))
-			if j > 1 && x > 1 { fmt.Print(color.With(player2, " |")) }
-		} else if regular.Board[i][j] == "-" {
+			if j > 1 && x > 1 {
+				fmt.Print(color.With(player2, " |"))
+			}
+		} else if Board[i][j] == "-" {
 			fmt.Printf(cellPart, color.With(tie, cell))
-			if j > 1 && x > 1 { fmt.Print(color.With(tie, " |")) }
+			if j > 1 && x > 1 {
+				fmt.Print(color.With(tie, " |"))
+			}
 		} else {
 			if strings.HasSuffix(cell, "X") {
 				fmt.Printf(cellPart, color.With(player1, cell))
 			} else {
 				fmt.Printf(cellPart, color.With(player2, cell))
 			}
-			if j > 1 && x > 1 { fmt.Print(color.With(sectorColor, " |")) }
+			if j > 1 && x > 1 {
+				fmt.Print(color.With(sectorColor, " |"))
+			}
 		}
 	}
 }

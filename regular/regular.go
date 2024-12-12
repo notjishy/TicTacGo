@@ -2,67 +2,50 @@ package regular
 
 import (
 	"fmt"
-	"strings"
-	"math/rand"
 	"tictacgo/utils"
 )
 
-func getPlayerMove(player int) {
-	fmt.Printf("Player %d, enter your move (e.g., A1, B2): ", player)
-	var move string
-	fmt.Scan(&move)
-	row, col, valid := parseMove(move)
-	if !valid || Board[row][col] != " " {
-		fmt.Println("Invalid move. Try again.")
-		getPlayerMove(player)
-		return
-	}
-	Board[row][col] = utils.PlayerSymbol(player)
-}
+// initialize variables
+// `player` variable indicates which player's turn it is,
+// starting with player 1 going first
+var player int
 
-func parseMove(move string) (int, int, bool) {
-	move = strings.ToLower(move)
-
-	if len(move) != 2 {
-		return 0, 0, false
-	}
-	row := int(move[0] - 'a')
-	col := int(move[1] - '1')
-	return row, col, row >= 0 && row < 3 && col >= 0 && col < 3
-}
+// maximum number of turns in the game before it force ends
+var availableMoves int
 
 func Play(playerCount int) {
-	InitializeBoard()
-	player := 1
-	availableMoves := 9
+	player = 1
+	availableMoves = 9
+	utils.InitializeBoard()
+
+	// loop game until no more moves left
+	// if availableMoves runs out, the game is a tie
 	for availableMoves > 0 {
-		if (player == 1 || (playerCount == 2 && player == 2)) {
-			PrintBoard()
-			getPlayerMove(player)
+		// only ask for player's move if the current turn is for an actual person.
+		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
+		if player == 1 || (playerCount == 2 && player == 2) {
+			utils.PrintBoard()
+			// acquire move from player.
+			utils.GetRegPlayerMove(player, utils.Board)
 		} else {
-			getComputerMove()
+			utils.GetRegComputerMove()
 		}
+		// decrement moves remaining
 		availableMoves--
+
+		// check board for win conditions.
+		// if moves is >= 5, no need to check as it would be impossible
 		if availableMoves < 5 {
-			if utils.CheckWin(player, Board) {
-				PrintBoard()
+			if utils.CheckWin(player, utils.Board) {
+				utils.PrintBoard()
 				fmt.Printf("Player %d wins!\n", player)
+				// force end game if someone won
 				return
 			}
 		}
+		// swap to next player after turn is finished
 		player = utils.SwitchPlayer(playerCount, player)
 	}
-	PrintBoard()
+	utils.PrintBoard()
 	fmt.Println("It's a tie!")
-}
-
-func getComputerMove() {
-	for {
-		row := rand.Intn(3)
-		col := rand.Intn(3)
-		if Board[row][col] == " " {
-			Board[row][col] = "O"
-			return
-		}
-	}
 }
