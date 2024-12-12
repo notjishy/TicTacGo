@@ -41,10 +41,9 @@ func Play(playerCount int) {
 			// ask player which board to play in if the current selected board is no longer in play (has been won/tied)
 			if availableMoves == 81 || utils.SectorBlocked {
 				utils.GetSectorMove(player, availableMoves, availableBoards)
-			} else {
-				// acquire move from player
-				row, col = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
 			}
+			// acquire move from player
+			row, col = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
 		} else {
 			// acquire move from computer
 			row, col = utils.GetSuperComputerMove(player, availableMoves, availableBoards)

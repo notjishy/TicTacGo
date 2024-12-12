@@ -98,7 +98,6 @@ func GetSectorMove(player int, availableMoves int, availableBoards int) {
 	}
 	ActiveSectorRow = sectorRow
 	ActiveSectorCol = sectorCol
-	GetSuperPlayerMove(player, availableMoves, availableBoards)
 }
 
 func ParseMove(move string) (int, int, bool) {
