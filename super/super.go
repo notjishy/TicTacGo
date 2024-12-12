@@ -32,8 +32,7 @@ func Play(playerCount int) {
 	availableMoves = 81
 	availableBoards = 9
 
-	// loop through game until until no more moves left
-	// if no more moves, game is a tie
+	// loop through game until until no more moves left and game ties
 	for availableMoves > 0 {
 		// only ask for player's move if the current turn is for an actual person.
 		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
@@ -43,11 +42,11 @@ func Play(playerCount int) {
 			if availableMoves == 81 || utils.SectorBlocked {
 				utils.GetSectorMove(player, availableMoves, availableBoards)
 			} else {
-				// acquire move from player. number of boards and moves left is also updated
+				// acquire move from player
 				row, col = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
 			}
 		} else {
-			// acquire move from computer, also updated number of boards and moves left
+			// acquire move from computer
 			row, col = utils.GetSuperComputerMove(player, availableMoves, availableBoards)
 		}
 
