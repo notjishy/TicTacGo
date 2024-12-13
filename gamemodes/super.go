@@ -61,6 +61,7 @@ func PlaySuper(playerCount int) {
 		// if >= 7 boards remaining, no need to check as a win is impossible there
 		if availableBoards < 7 {
 			if utils.CheckForWin(player, utils.Board) {
+				gameEnd = true
 				utils.PrintSuperBoard(availableMoves, gameEnd)
 				fmt.Printf("Player %d wins!\n", player)
 				// wait for user to press a key before returning to main menu
