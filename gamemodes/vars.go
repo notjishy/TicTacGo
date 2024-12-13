@@ -4,6 +4,8 @@ package gamemodes
 
 // indicates which player's turn it is
 var player int
+var didPlayerQuit bool
+var confirmQuit bool
 
 // how many moves are remaining in the game before it ties
 var availableMoves int

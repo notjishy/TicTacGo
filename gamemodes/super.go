@@ -34,13 +34,18 @@ func PlaySuper(playerCount int) {
 			utils.PrintSuperBoard(availableMoves, gameEnd)
 			// ask player which board to play in if the current selected board is no longer in play (has been won/tied)
 			if availableMoves == 81 || utils.Board[row][col] != " " {
-				utils.GetSectorMove(player, availableMoves, availableBoards)
+				// returns boolean value indicating if the player has quit the game
+				didPlayerQuit = utils.GetSectorMove(player, availableMoves, availableBoards)
+				// if player has quit the game, force end this gameloop
+				if didPlayerQuit { break }
 
 				// print the board again (so the player can see the highlighted sector/subboard)
 				utils.PrintSuperBoard(availableMoves, gameEnd)
 			}
 			// acquire move from player
-			row, col = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
+			row, col, didPlayerQuit = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
+
+			if didPlayerQuit { break }
 		} else {
 			// acquire move from computer
 			row, col = utils.GetSuperComputerMove(player, availableMoves, availableBoards)
@@ -63,6 +68,9 @@ func PlaySuper(playerCount int) {
 		// swap to next player after turn is finished
 		player = utils.SwitchPlayer(playerCount, player)
 	}
-	utils.PrintSuperBoard(availableMoves, gameEnd)
-	fmt.Println("It's a tie!")
+	// only display tie message if player did not quit the game
+	if !didPlayerQuit {
+		utils.PrintSuperBoard(availableMoves, gameEnd)
+		fmt.Println("It's a tie!")
+	}
 }

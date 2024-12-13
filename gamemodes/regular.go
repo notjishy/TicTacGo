@@ -18,8 +18,10 @@ func PlayRegular(playerCount int) {
 		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
 		if player == 1 || (playerCount == 2 && player == 2) {
 			utils.PrintBoard()
-			// acquire move from player.
-			utils.GetRegularPlayerMove(player, utils.Board)
+			// acquire move from player. returns boolean value indicating if player quit the game or not
+			didPlayerQuit = utils.GetRegularPlayerMove(player, utils.Board)
+			// if player chose to quit the game, force end this gameloop
+			if didPlayerQuit { break } // force end game and go back to main
 		} else {
 			utils.GetRegularComputerMove(player)
 		}
@@ -39,6 +41,9 @@ func PlayRegular(playerCount int) {
 		// swap to next player after turn is finished
 		player = utils.SwitchPlayer(playerCount, player)
 	}
-	utils.PrintBoard()
-	fmt.Println("It's a tie!")
+	// only print message if player did not quit the game
+	if !didPlayerQuit {
+		utils.PrintBoard()
+		fmt.Println("It's a tie!")
+	}
 }
