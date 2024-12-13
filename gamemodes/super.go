@@ -2,7 +2,10 @@ package gamemodes
 
 import (
 	"fmt"
+	"log"
 	"tictacgo/utils"
+	
+	"github.com/eiannone/keyboard"
 )
 
 // initialize variables
@@ -60,8 +63,15 @@ func PlaySuper(playerCount int) {
 			if utils.CheckForWin(player, utils.Board) {
 				utils.PrintSuperBoard(availableMoves, gameEnd)
 				fmt.Printf("Player %d wins!\n", player)
-				// force game to end if there is winner
-				return
+				// wait for user to press a key before returning to main menu
+				fmt.Print("Press any key to go back to main menu...")
+				err := keyboard.Open() // begin keyboard listening
+				if err != nil { log.Fatal(err) }
+				_, _, err = keyboard.GetKey() // get the key that is pressed (we arent storing it we dont need to know what it is)
+				if err != nil { log.Fatal(err) }
+				defer keyboard.Close() // end keyboard listening
+				// force end game
+				break
 			}
 		}
 
