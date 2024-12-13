@@ -72,7 +72,7 @@ func PlaySuper(playerCount int) {
 				if err != nil { log.Fatal(err) }
 				defer keyboard.Close() // end keyboard listening
 				// force end game
-				break
+				return
 			}
 		}
 

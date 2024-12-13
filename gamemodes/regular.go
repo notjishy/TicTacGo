@@ -45,7 +45,7 @@ func PlayRegular(playerCount int) {
 				if err != nil { log.Fatal(err) }
 				defer keyboard.Close() // end keyboard listening
 				// force end game
-				break
+				return
 			}
 		}
 		// swap to next player after turn is finished
