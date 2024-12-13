@@ -83,7 +83,7 @@ func GetEmptySubBoards() int {
 }
 
 // prints the SuperBoard with sub-boards
-func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
+func PrintSuperBoard(availableMoves int, gameEnd bool) {
 	// clear the screen
 	screen.Clear()
 
@@ -98,7 +98,7 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 
 	// print the top row with column numbers for each super board
 	fmt.Printf("\n     1   2   3 | 1   2   3 | 1   2   3\n")
-	printSubHorizontalDivider(0, regColsTaken, availableMoves, sectorBlocked, gameEnd)
+	printSubHorizontalDivider(0, regColsTaken, availableMoves, gameEnd)
 
 	// iterate over each row of the SuperBoard
 	for i := 0; i < rows; i++ {
@@ -114,7 +114,7 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 			for j := 0; j < cols; j++ {
 				// print the sub-board for the current row and column
 				color := standard
-				if i == ActiveSectorRow && j == ActiveSectorCol && availableMoves != 81 && !sectorBlocked && !gameEnd {
+				if (i == ActiveSectorRow && j == ActiveSectorCol && !SectorBlocked && !gameEnd) {
 					color = active
 				} else if Board[i][j] == "X" {
 					color = player1
@@ -129,7 +129,7 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 
 			// print the horizontal dividers between sub-rows
 			if subRow < subRows-1 {
-				printSubHorizontalDivider(i, regColsTaken, availableMoves, sectorBlocked, gameEnd)
+				printSubHorizontalDivider(i, regColsTaken, availableMoves, gameEnd)
 			}
 		}
 
@@ -138,16 +138,16 @@ func PrintSuperBoard(availableMoves int, sectorBlocked bool, gameEnd bool) {
 			fmt.Println(color.InBold("  ===+===+==== | ====+==== | ====+===+==="))
 		}
 	}
-	printSubHorizontalDivider(2, regColsTaken, availableMoves, sectorBlocked, gameEnd)
+	printSubHorizontalDivider(2, regColsTaken, availableMoves, gameEnd)
 	fmt.Println("") // move to the next line after printing the SuperBoard
 }
 
-func printSubHorizontalDivider(i int, regColsTaken []int, availableMoves int, sectorBlocked bool, gameEnd bool) {
+func printSubHorizontalDivider(i int, regColsTaken []int, availableMoves int, gameEnd bool) {
 	first := standard
 	second := standard
 	third := standard
 
-	if availableMoves < 81 && !sectorBlocked && !gameEnd {
+	if !SectorBlocked && !gameEnd {
 		if (ActiveSectorRow == 0 && i < 1) || (ActiveSectorRow == 1 && i == 1) || (ActiveSectorRow == 2 && i > 1) {
 			if ActiveSectorCol == 0 {
 				first = active

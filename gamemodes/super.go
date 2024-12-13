@@ -24,16 +24,20 @@ func PlaySuper(playerCount int) {
 	player = 1
 	availableMoves = 81
 	availableBoards = 9
+	utils.SectorBlocked = true
 
 	// loop through game until until no more moves left and game ties
 	for availableMoves > 0 {
 		// only ask for player's move if the current turn is for an actual person.
 		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
 		if player == 1 || (playerCount == 2 && player == 2) {
-			utils.PrintSuperBoard(availableMoves, utils.SectorBlocked, gameEnd)
+			utils.PrintSuperBoard(availableMoves, gameEnd)
 			// ask player which board to play in if the current selected board is no longer in play (has been won/tied)
 			if availableMoves == 81 || utils.Board[row][col] != " " {
 				utils.GetSectorMove(player, availableMoves, availableBoards)
+
+				// print the board again (so the player can see the highlighted sector/subboard)
+				utils.PrintSuperBoard(availableMoves, gameEnd)
 			}
 			// acquire move from player
 			row, col = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
@@ -49,7 +53,7 @@ func PlaySuper(playerCount int) {
 		// if >= 7 boards remaining, no need to check as a win is impossible there
 		if availableBoards < 7 {
 			if utils.CheckForWin(player, utils.Board) {
-				utils.PrintSuperBoard(availableMoves, utils.SectorBlocked, gameEnd)
+				utils.PrintSuperBoard(availableMoves, gameEnd)
 				fmt.Printf("Player %d wins!\n", player)
 				// force game to end if there is winner
 				return
@@ -59,6 +63,6 @@ func PlaySuper(playerCount int) {
 		// swap to next player after turn is finished
 		player = utils.SwitchPlayer(playerCount, player)
 	}
-	utils.PrintSuperBoard(availableMoves, utils.SectorBlocked, gameEnd)
+	utils.PrintSuperBoard(availableMoves, gameEnd)
 	fmt.Println("It's a tie!")
 }

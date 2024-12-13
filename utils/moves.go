@@ -97,4 +97,5 @@ func GetSectorMove(player int, availableMoves int, availableBoards int) {
 	// set the chosen sector/subboard
 	ActiveSectorRow = sectorRow
 	ActiveSectorCol = sectorCol
+	SectorBlocked = false
 }
