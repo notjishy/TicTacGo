@@ -11,10 +11,11 @@ import (
 
 func main() {
 	for {
-		selectedMode := askMode() // get input using askMode function
+		// get input using askMode function
+		selectedMode := askMode()
 		if selectedMode == "q" {
-			break
-		} // quits the game
+			break // quits the game
+		}
 
 		// get amount of players
 		playerCount := askPlayerCount()
