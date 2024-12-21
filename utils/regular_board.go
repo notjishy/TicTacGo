@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"tictacgo/config"
+
 	"github.com/TwiN/go-color"
 	"github.com/inancgumus/screen"
 )
@@ -22,6 +24,8 @@ func InitializeBoard() {
 
 // print the board in the terminal
 func PrintBoard() {
+	config := config.GetConfig()
+
 	// clear the screen
 	screen.Clear()
 
@@ -32,7 +36,7 @@ func PrintBoard() {
 		// row 1 = a, row 2 = b, row 3 = c
 		fmt.Print(string('a' + i))
 		for _, cell := range row {
-			if strings.HasSuffix(cell, "X") {
+			if strings.HasSuffix(cell, config.Player1) {
 				fmt.Printf(" | %s", color.InRed(cell))
 			} else {
 				fmt.Printf(" | %s", color.InCyan(cell))

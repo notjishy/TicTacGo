@@ -3,6 +3,8 @@ package utils
 import (
 	"fmt"
 	"strings"
+
+	"tictacgo/config"
 )
 
 var confirmQuit string
@@ -15,10 +17,11 @@ func SwitchPlayer(playerCount int, player int) int {
 }
 
 func GetPlayerSymbol(player int) string {
+	config := config.GetConfig()
 	if player == 1 {
-		return "X"
+		return config.Player1
 	}
-	return "O"
+	return config.Player2
 }
 
 func ParsePlayerMove(move string) (int, int, bool) {
@@ -36,6 +39,8 @@ func confirmQuitGame() bool {
 	fmt.Print("Are you sure you want to quit? (Y/N) ")
 	fmt.Scan(&confirmQuit)
 
-	if strings.ToLower(confirmQuit) != "y" { return false }
+	if strings.ToLower(confirmQuit) != "y" {
+		return false
+	}
 	return true
 }

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"tictacgo/config"
+
 	"github.com/TwiN/go-color"
 	"github.com/inancgumus/screen"
 )
@@ -40,20 +42,20 @@ type SubBoard struct {
 
 // initializes the SuperBoard with empty spaces
 func InitializeSuperBoard() {
-    // Iterate over each cell in a flattened index
-    totalCells := rows * cols * subRows * subCols
-    for idx := 0; idx < totalCells; idx++ {
-        // Calculate the respective indices for i, j, x, y
-        i := idx / (cols * subRows * subCols)
-        j := (idx / (subRows * subCols)) % cols
-        x := (idx / subCols) % subRows
-        y := idx % subCols
+	// Iterate over each cell in a flattened index
+	totalCells := rows * cols * subRows * subCols
+	for idx := 0; idx < totalCells; idx++ {
+		// Calculate the respective indices for i, j, x, y
+		i := idx / (cols * subRows * subCols)
+		j := (idx / (subRows * subCols)) % cols
+		x := (idx / subCols) % subRows
+		y := idx % subCols
 
-        // Set the cell to empty space
-        GameBoard.Cells[i][j].Cells[x][y] = " "
-    }
+		// Set the cell to empty space
+		GameBoard.Cells[i][j].Cells[x][y] = " "
+	}
 
-    InitializeBoard()
+	InitializeBoard()
 }
 
 // count how many empty spaces remaining in a subboard
@@ -84,6 +86,8 @@ func GetEmptySubBoards() int {
 
 // prints the SuperBoard with sub-boards
 func PrintSuperBoard(availableMoves int, gameEnd bool) {
+	config := config.GetConfig()
+
 	// clear the screen
 	screen.Clear()
 
@@ -98,7 +102,7 @@ func PrintSuperBoard(availableMoves int, gameEnd bool) {
 
 	// print the top row with column numbers for each super board
 	fmt.Printf("\n     1   2   3 | 1   2   3 | 1   2   3\n")
-	printSubHorizontalDivider(0, regColsTaken, availableMoves, gameEnd)
+	printSubHorizontalDivider(0, regColsTaken, gameEnd)
 
 	// iterate over each row of the SuperBoard
 	for i := 0; i < rows; i++ {
@@ -114,11 +118,11 @@ func PrintSuperBoard(availableMoves int, gameEnd bool) {
 			for j := 0; j < cols; j++ {
 				// print the sub-board for the current row and column
 				color := standard
-				if (i == ActiveSectorRow && j == ActiveSectorCol && !SectorBlocked && !gameEnd) {
+				if i == ActiveSectorRow && j == ActiveSectorCol && !SectorBlocked && !gameEnd {
 					color = active
-				} else if Board[i][j] == "X" {
+				} else if Board[i][j] == config.Player1 {
 					color = player1
-				} else if Board[i][j] == "O" {
+				} else if Board[i][j] == config.Player2 {
 					color = player2
 				} else if Board[i][j] == "-" {
 					color = tie
@@ -129,7 +133,7 @@ func PrintSuperBoard(availableMoves int, gameEnd bool) {
 
 			// print the horizontal dividers between sub-rows
 			if subRow < subRows-1 {
-				printSubHorizontalDivider(i, regColsTaken, availableMoves, gameEnd)
+				printSubHorizontalDivider(i, regColsTaken, gameEnd)
 			}
 		}
 
@@ -138,11 +142,13 @@ func PrintSuperBoard(availableMoves int, gameEnd bool) {
 			fmt.Println(color.InBold("  ===+===+==== | ====+==== | ====+===+==="))
 		}
 	}
-	printSubHorizontalDivider(2, regColsTaken, availableMoves, gameEnd)
+	printSubHorizontalDivider(2, regColsTaken, gameEnd)
 	fmt.Println("") // move to the next line after printing the SuperBoard
 }
 
-func printSubHorizontalDivider(i int, regColsTaken []int, availableMoves int, gameEnd bool) {
+func printSubHorizontalDivider(i int, regColsTaken []int, gameEnd bool) {
+	config := config.GetConfig()
+
 	first := standard
 	second := standard
 	third := standard
@@ -162,9 +168,9 @@ func printSubHorizontalDivider(i int, regColsTaken []int, availableMoves int, ga
 		for j := 0; j < len(regColsTaken); j++ {
 			if Board[i][regColsTaken[j]] != " " {
 				var blockedSectorColor string
-				if Board[i][regColsTaken[j]] == "X" {
+				if Board[i][regColsTaken[j]] == config.Player1 {
 					blockedSectorColor = player1
-				} else if Board[i][regColsTaken[j]] == "O" {
+				} else if Board[i][regColsTaken[j]] == config.Player2 {
 					blockedSectorColor = player2
 				} else if Board[i][regColsTaken[j]] == "-" {
 					blockedSectorColor = tie
@@ -186,6 +192,8 @@ func printSubHorizontalDivider(i int, regColsTaken []int, availableMoves int, ga
 
 // prints respective row of a subboard
 func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
+	config := config.GetConfig()
+
 	for x, cell := range subBoardRow {
 		cellPart := ""
 		if x < 1 && j > 0 {
@@ -194,12 +202,12 @@ func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
 			cellPart = color.With(sectorColor, " | %-3s")
 		}
 
-		if Board[i][j] == "X" {
+		if Board[i][j] == config.Player1 {
 			fmt.Printf(cellPart, color.With(player1, cell))
 			if j > 1 && x > 1 {
 				fmt.Print(color.With(player1, " |"))
 			}
-		} else if Board[i][j] == "O" {
+		} else if Board[i][j] == config.Player2 {
 			fmt.Printf(cellPart, color.With(player2, cell))
 			if j > 1 && x > 1 {
 				fmt.Print(color.With(player2, " |"))
@@ -210,7 +218,7 @@ func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
 				fmt.Print(color.With(tie, " |"))
 			}
 		} else {
-			if strings.HasSuffix(cell, "X") {
+			if strings.HasSuffix(cell, config.Player1) {
 				fmt.Printf(cellPart, color.With(player1, cell))
 			} else {
 				fmt.Printf(cellPart, color.With(player2, cell))
