@@ -34,7 +34,7 @@ func PrintBoard() {
 	for i, row := range Board {
 		// + i to 'a' so the row letter increments up.
 		// row 1 = a, row 2 = b, row 3 = c
-		fmt.Print(string('a' + i))
+		fmt.Print(string(rune('a' + i)))
 		for _, cell := range row {
 			if strings.HasSuffix(cell, config.Player1) {
 				fmt.Printf(" | %s", color.InRed(cell))
