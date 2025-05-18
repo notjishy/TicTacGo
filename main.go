@@ -2,21 +2,27 @@ package main
 
 import (
 	"fmt"
+	"github.com/TwiN/go-color"
 	"strings"
 	"tictacgo/gamemodes"
 
-	"github.com/TwiN/go-color"
 	"github.com/inancgumus/screen"
 )
 
 func main() {
+	// print main menu here and again at end of loop
+	// that way we dont immediately clear out the error messages if there is one, because we dont close the program
+	// from those errors theres no need for that
+	mainMenu()
+
 	for {
 		// get input using askMode function
 		selectedMode, err := askMode()
-		if err == nil {
+		if err != nil {
 			fmt.Println("Error reading input:", err)
 			continue // retry if there was an error
 		}
+
 		if selectedMode == "q" {
 			break // quits the game
 		}
@@ -34,15 +40,16 @@ func main() {
 		} else if selectedMode == "s" {
 			gamemodes.PlaySuper(playerCount)
 		}
+
+		mainMenu() // see above
 	}
 }
 
 // main menu screen
-func askMode() (string, error) {
+func mainMenu() {
 	// clear the screen
 	screen.Clear()
 
-	var modeInput string
 	// print menu
 	fmt.Print("\n\n _______ _   _______          _____\n",
 		"|__   __(_) |__   __|        / ____|\n",
@@ -50,10 +57,16 @@ func askMode() (string, error) {
 		"   | |  | |/ __| |/ _` |/ __| | |_ |/ _ \\\n",
 		"   | |  | | (__| | (_| | (__| |__| | (_) |\n",
 		"   |_|  |_|\\___|_|\\__,_|\\___|\\_____|\\___/\n\n\n\n")
-	fmt.Print("               Select a Mode:\n",
-		(color.InGreen("  (R)egular  ")+color.With(color.Reset, " ||  "))+color.InCyan(" (S)uper  ")+color.With(color.Reset, " ||  ")+color.InRed(" (Q)uit\n\n"))
 
-	// retreive input from user
+	fmt.Print("               Select a Mode:\n",
+		(color.InGreen("  (R)egular  ")+color.With(color.Reset, " ||  "))+color.InCyan(
+			" (S)uper  ")+color.With(color.Reset, " ||  ")+color.InRed(" (Q)uit\n\n"))
+}
+
+func askMode() (string, error) {
+	var modeInput string
+
+	// retrieve input from user
 	_, err := fmt.Scan(&modeInput)
 	if err != nil {
 		return "", err
