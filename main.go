@@ -12,13 +12,21 @@ import (
 func main() {
 	for {
 		// get input using askMode function
-		selectedMode := askMode()
+		selectedMode, err := askMode()
+		if err == nil {
+			fmt.Println("Error reading input:", err)
+			continue // retry if there was an error
+		}
 		if selectedMode == "q" {
 			break // quits the game
 		}
 
 		// get amount of players
-		playerCount := askPlayerCount()
+		playerCount, err := askPlayerCount()
+		if err != nil {
+			fmt.Println("Error reading input:", err)
+			continue // retry if there was an error
+		}
 
 		// run chosen game mode
 		if selectedMode == "r" {
@@ -30,7 +38,7 @@ func main() {
 }
 
 // main menu screen
-func askMode() string {
+func askMode() (string, error) {
 	// clear the screen
 	screen.Clear()
 
@@ -46,7 +54,10 @@ func askMode() string {
 		(color.InGreen("  (R)egular  ")+color.With(color.Reset, " ||  "))+color.InCyan(" (S)uper  ")+color.With(color.Reset, " ||  ")+color.InRed(" (Q)uit\n\n"))
 
 	// retreive input from user
-	fmt.Scan(&modeInput)
+	_, err := fmt.Scan(&modeInput)
+	if err != nil {
+		return "", err
+	}
 	modeInput = strings.ToLower(modeInput)
 
 	// check input with mode selection
@@ -56,14 +67,17 @@ func askMode() string {
 	}
 
 	// send selected mode forward
-	return modeInput
+	return modeInput, nil
 }
 
 // ask the user how many players (1 or 2)
-func askPlayerCount() int {
+func askPlayerCount() (int, error) {
 	var inputNum int
 	fmt.Print("\n(1) Player   ||    (2) Players\n")
-	fmt.Scan(&inputNum)
+	_, err := fmt.Scan(&inputNum)
+	if err != nil {
+		return 0, err
+	}
 
 	// verify valid number of players
 	if inputNum != 1 && inputNum != 2 {
@@ -72,5 +86,5 @@ func askPlayerCount() int {
 	}
 
 	// send selected player count forward
-	return inputNum
+	return inputNum, nil
 }
