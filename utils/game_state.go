@@ -1,6 +1,6 @@
 package utils
 
-// THIS FUNCTION IS ONLY USED IN THE SUPER MODE
+// ProcessMoveAndUpdateGameState - THIS FUNCTION IS ONLY USED IN THE SUPER MODE
 func ProcessMoveAndUpdateGameState(row int, col int, player int, availableMoves int, availableBoards int) (int, int) {
 	// decrement remaining moves
 	availableMoves--
@@ -49,7 +49,7 @@ func ProcessMoveAndUpdateGameState(row int, col int, player int, availableMoves 
 	return availableMoves, availableBoards
 }
 
-// check for a win in a board. this function is utilized by both modes
+// CheckForWin - check for a win in a board. this function is utilized by both modes
 func CheckForWin(player int, Board [3][3]string) bool {
 	symbol := GetPlayerSymbol(player)
 	// Check rows

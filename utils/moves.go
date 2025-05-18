@@ -6,9 +6,9 @@ import (
 	"strings"
 )
 
-// get the move input from a player in the Regular mode
+// GetRegularPlayerMove - get the move input from a player in the Regular mode
 func GetRegularPlayerMove(player int, board [3][3]string) bool {
-	getRegularPlayerMoveFunctionStart:
+getRegularPlayerMoveFunctionStart:
 	fmt.Printf("Player %d, enter your move (e.g., A1, B2) or (Q) to quit the game: ", player)
 	var move string
 	fmt.Scan(&move)
@@ -36,7 +36,7 @@ func GetRegularPlayerMove(player int, board [3][3]string) bool {
 	return false
 }
 
-// decide the move selection for the computer in the Regular mode
+// GetRegularComputerMove - decide the move selection for the computer in the Regular mode
 func GetRegularComputerMove(player int) {
 	for {
 		row := rand.Intn(3)
@@ -49,9 +49,9 @@ func GetRegularComputerMove(player int) {
 	}
 }
 
-// get the move input from player in the Super mode
+// GetSuperPlayerMove - get the move input from player in the Super mode
 func GetSuperPlayerMove(player int, availableMoves int, availableBoards int) (int, int, bool) {
-	getSuperPlayerMoveFunctionStart:
+getSuperPlayerMoveFunctionStart:
 	fmt.Printf("Player %d, enter your move (e.g., A1, B2) or (Q) to quit the game: ", player)
 	var move string
 	fmt.Scan(&move)
@@ -77,7 +77,7 @@ func GetSuperPlayerMove(player int, availableMoves int, availableBoards int) (in
 	return row, col, false
 }
 
-// decide move selection for the computer in Super mode
+// GetSuperComputerMove - decide move selection for the computer in Super mode
 // will also decide next sector/subboard if necessary
 func GetSuperComputerMove(player int, availableMoves int, availableBoards int) (int, int) {
 	// loop until a move is made
@@ -93,7 +93,7 @@ func GetSuperComputerMove(player int, availableMoves int, availableBoards int) (
 					return row, col
 				}
 			}
-		// select a new sector/subboard
+			// select a new sector/subboard
 		} else {
 			for {
 				row := rand.Intn(3)
@@ -110,9 +110,9 @@ func GetSuperComputerMove(player int, availableMoves int, availableBoards int) (
 	}
 }
 
-// get player input for the next sector/subboard to make a move in
+// GetSectorMove - get player input for the next sector/subboard to make a move in
 func GetSectorMove(player int, availableMoves int, availableBoards int) bool {
-	getSectorMoveFunctionStart:
+getSectorMoveFunctionStart:
 	fmt.Printf("Player %d, which sector would you like to move in (e.g., A1, B2, <A - C><1 - 3>) or (Q) to quit the game: ", player)
 	var move string
 	fmt.Scan(&move)

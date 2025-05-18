@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"tictacgo/utils"
-	
+
 	"github.com/eiannone/keyboard"
 )
 
@@ -15,7 +15,7 @@ var row int
 var col int
 
 // number of boards in the game (it will always print out 9 boards,
-// this just is just to track how many are left in play)
+// this just is to track how many are left in play)
 var availableBoards int
 
 // game will end when this becomes true
@@ -29,26 +29,30 @@ func PlaySuper(playerCount int) {
 	availableBoards = 9
 	utils.SectorBlocked = true
 
-	// loop through game until until no more moves left and game ties
+	// loop through game until no more moves left and game ties
 	for availableMoves > 0 {
 		// only ask for player's move if the current turn is for an actual person.
 		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
 		if player == 1 || (playerCount == 2 && player == 2) {
-			utils.PrintSuperBoard(availableMoves, gameEnd)
+			utils.PrintSuperBoard(gameEnd)
 			// ask player which board to play in if the current selected board is no longer in play (has been won/tied)
 			if availableMoves == 81 || utils.Board[row][col] != " " {
 				// returns boolean value indicating if the player has quit the game
 				didPlayerQuit = utils.GetSectorMove(player, availableMoves, availableBoards)
 				// if player has quit the game, force end this gameloop
-				if didPlayerQuit { break }
+				if didPlayerQuit {
+					break
+				}
 
 				// print the board again (so the player can see the highlighted sector/subboard)
-				utils.PrintSuperBoard(availableMoves, gameEnd)
+				utils.PrintSuperBoard(gameEnd)
 			}
 			// acquire move from player
 			row, col, didPlayerQuit = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
 
-			if didPlayerQuit { break }
+			if didPlayerQuit {
+				break
+			}
 		} else {
 			// acquire move from computer
 			row, col = utils.GetSuperComputerMove(player, availableMoves, availableBoards)
@@ -62,14 +66,18 @@ func PlaySuper(playerCount int) {
 		if availableBoards < 7 {
 			if utils.CheckForWin(player, utils.Board) {
 				gameEnd = true
-				utils.PrintSuperBoard(availableMoves, gameEnd)
+				utils.PrintSuperBoard(gameEnd)
 				fmt.Printf("Player %d wins!\n", player)
 				// wait for user to press a key before returning to main menu
 				fmt.Print("Press any key to go back to main menu...")
 				err := keyboard.Open() // begin keyboard listening
-				if err != nil { log.Fatal(err) }
+				if err != nil {
+					log.Fatal(err)
+				}
 				_, _, err = keyboard.GetKey() // get the key that is pressed (we arent storing it we dont need to know what it is)
-				if err != nil { log.Fatal(err) }
+				if err != nil {
+					log.Fatal(err)
+				}
 				defer keyboard.Close() // end keyboard listening
 				// force end game
 				return
@@ -81,7 +89,7 @@ func PlaySuper(playerCount int) {
 	}
 	// only display tie message if player did not quit the game
 	if !didPlayerQuit {
-		utils.PrintSuperBoard(availableMoves, gameEnd)
+		utils.PrintSuperBoard(gameEnd)
 		fmt.Println("It's a tie!")
 	}
 }

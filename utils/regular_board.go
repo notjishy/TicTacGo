@@ -10,10 +10,10 @@ import (
 	"github.com/inancgumus/screen"
 )
 
-// define the board
+// Board - define the board
 var Board [3][3]string
 
-// create the board
+// InitializeBoard - create the board
 func InitializeBoard() {
 	for row := range Board {
 		for col := range Board[row] {
@@ -22,7 +22,7 @@ func InitializeBoard() {
 	}
 }
 
-// print the board in the terminal
+// PrintBoard - print the board in the terminal
 func PrintBoard() {
 	gameConfig := config.GetConfig()
 
