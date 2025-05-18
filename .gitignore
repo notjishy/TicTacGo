@@ -21,3 +21,6 @@
 go.work
 modes/.DS_Store
 .DS_Store
+
+# IDEs and editors
+.idea
