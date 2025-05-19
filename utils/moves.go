@@ -7,18 +7,24 @@ import (
 )
 
 // GetRegularPlayerMove - get the move input from a player in the Regular mode
-func GetRegularPlayerMove(player int, board [3][3]string) bool {
+func GetRegularPlayerMove(player int, board [3][3]string) (bool, error) {
 getRegularPlayerMoveFunctionStart:
 	fmt.Printf("Player %d, enter your move (e.g., A1, B2) or (Q) to quit the game: ", player)
 	var move string
-	fmt.Scan(&move)
+	_, err := fmt.Scan(&move)
+	if err != nil {
+		return false, err
+	}
 
 	// if player chose to quit, confirm if they are sure
 	// if they change their mind, restart this function from the beginning
 	if strings.ToLower(move) == "q" {
-		confirmQuit := confirmQuitGame()
+		confirmQuit, err := confirmQuitGame()
+		if err != nil {
+			return false, err
+		}
 		if confirmQuit {
-			return true
+			return true, nil
 		} else {
 			goto getRegularPlayerMoveFunctionStart
 		}
@@ -28,12 +34,15 @@ getRegularPlayerMoveFunctionStart:
 	// loop this function until a valid input is received
 	if !valid || board[row][col] != " " {
 		fmt.Println("Invalid move. Try again.")
-		GetRegularPlayerMove(player, board)
-		return false
+		_, err := GetRegularPlayerMove(player, board)
+		if err != nil {
+			return false, err
+		}
+		return false, nil
 	}
 	// set the players move to the board
 	Board[row][col] = GetPlayerSymbol(player)
-	return false
+	return false, nil
 }
 
 // GetRegularComputerMove - decide the move selection for the computer in the Regular mode
@@ -50,18 +59,24 @@ func GetRegularComputerMove(player int) {
 }
 
 // GetSuperPlayerMove - get the move input from player in the Super mode
-func GetSuperPlayerMove(player int, availableMoves int, availableBoards int) (int, int, bool) {
+func GetSuperPlayerMove(player int, availableMoves int, availableBoards int) (int, int, bool, error) {
 getSuperPlayerMoveFunctionStart:
 	fmt.Printf("Player %d, enter your move (e.g., A1, B2) or (Q) to quit the game: ", player)
 	var move string
-	fmt.Scan(&move)
+	_, err := fmt.Scan(&move)
+	if err != nil {
+		return 0, 0, false, err
+	}
 
 	// if player chose to quit, confirm if they are sure
 	// if they change their mind, restart this function from the beginning
 	if strings.ToLower(move) == "q" {
-		confirmQuit := confirmQuitGame()
+		confirmQuit, err := confirmQuitGame()
+		if err != nil {
+			return 0, 0, false, err
+		}
 		if confirmQuit {
-			return 0, 0, true
+			return 0, 0, true, nil
 		} else {
 			goto getSuperPlayerMoveFunctionStart
 		}
@@ -70,16 +85,19 @@ getSuperPlayerMoveFunctionStart:
 	row, col, valid := ParsePlayerMove(move)
 	if !valid || GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] != " " {
 		fmt.Println("Invalid move. Try again.")
-		GetSuperPlayerMove(player, availableMoves, availableBoards)
-		return row, col, false
+		_, _, _, err := GetSuperPlayerMove(player, availableMoves, availableBoards)
+		if err != nil {
+			return 0, 0, false, err
+		}
+		return row, col, false, nil
 	}
 	GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] = GetPlayerSymbol(player)
-	return row, col, false
+	return row, col, false, nil
 }
 
 // GetSuperComputerMove - decide move selection for the computer in Super mode
 // will also decide next sector/subboard if necessary
-func GetSuperComputerMove(player int, availableMoves int, availableBoards int) (int, int) {
+func GetSuperComputerMove(player int) (int, int) {
 	// loop until a move is made
 	for {
 		// decide move if sector/subboard is playable
@@ -111,18 +129,24 @@ func GetSuperComputerMove(player int, availableMoves int, availableBoards int) (
 }
 
 // GetSectorMove - get player input for the next sector/subboard to make a move in
-func GetSectorMove(player int, availableMoves int, availableBoards int) bool {
+func GetSectorMove(player int, availableMoves int, availableBoards int) (bool, error) {
 getSectorMoveFunctionStart:
 	fmt.Printf("Player %d, which sector would you like to move in (e.g., A1, B2, <A - C><1 - 3>) or (Q) to quit the game: ", player)
 	var move string
-	fmt.Scan(&move)
+	_, err := fmt.Scan(&move)
+	if err != nil {
+		return false, err
+	}
 
 	// if player chose to quit, confirm if they are sure
 	// if they change their mind, restart this function from the beginning
 	if strings.ToLower(move) == "q" {
-		confirmQuit := confirmQuitGame()
+		confirmQuit, err := confirmQuitGame()
+		if err != nil {
+			return false, err
+		}
 		if confirmQuit {
-			return true
+			return true, nil
 		} else {
 			goto getSectorMoveFunctionStart
 		}
@@ -132,13 +156,16 @@ getSectorMoveFunctionStart:
 	// loop this function a valid input is received
 	if !sectorValid || Board[sectorRow][sectorCol] != " " {
 		fmt.Println("Invalid sector, Try again.")
-		GetSectorMove(player, availableMoves, availableBoards)
-		return false
+		_, err := GetSectorMove(player, availableMoves, availableBoards)
+		if err != nil {
+			return false, err
+		}
+		return false, nil
 	}
 	// set the chosen sector/subboard
 	ActiveSectorRow = sectorRow
 	ActiveSectorCol = sectorCol
 	SectorBlocked = false
 
-	return false
+	return false, nil
 }

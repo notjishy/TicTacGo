@@ -34,14 +34,17 @@ func main() {
 			continue // retry if there was an error
 		}
 
-		// run chosen game mode
 		if selectedMode == "r" {
-			gamemodes.PlayRegular(playerCount)
+			err = gamemodes.PlayRegular(playerCount)
 		} else if selectedMode == "s" {
-			gamemodes.PlaySuper(playerCount)
+			err = gamemodes.PlaySuper(playerCount)
 		}
 
 		mainMenu() // see above
+		if err != nil {
+			fmt.Println("Error during game:", err)
+			continue
+		}
 	}
 }
 

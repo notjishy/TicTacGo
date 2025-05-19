@@ -19,9 +19,9 @@ var col int
 var availableBoards int
 
 // game will end when this becomes true
-var gameEnd bool = false
+var gameEnd = false
 
-func PlaySuper(playerCount int) {
+func PlaySuper(playerCount int) error {
 	utils.InitializeSuperBoard()
 	// set variables at start of game
 	player = 1
@@ -38,7 +38,10 @@ func PlaySuper(playerCount int) {
 			// ask player which board to play in if the current selected board is no longer in play (has been won/tied)
 			if availableMoves == 81 || utils.Board[row][col] != " " {
 				// returns boolean value indicating if the player has quit the game
-				didPlayerQuit = utils.GetSectorMove(player, availableMoves, availableBoards)
+				didPlayerQuit, err := utils.GetSectorMove(player, availableMoves, availableBoards)
+				if err != nil {
+					return err
+				}
 				// if player has quit the game, force end this gameloop
 				if didPlayerQuit {
 					break
@@ -48,14 +51,18 @@ func PlaySuper(playerCount int) {
 				utils.PrintSuperBoard(gameEnd)
 			}
 			// acquire move from player
-			row, col, didPlayerQuit = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
+			var err error = nil
+			row, col, didPlayerQuit, err = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
+			if err != nil {
+				return err
+			}
 
 			if didPlayerQuit {
 				break
 			}
 		} else {
 			// acquire move from computer
-			row, col = utils.GetSuperComputerMove(player, availableMoves, availableBoards)
+			row, col = utils.GetSuperComputerMove(player)
 		}
 
 		// update gameboard state (checks for wins in remaining boards, updates the active board, decrements remining moves and boards)
@@ -70,26 +77,34 @@ func PlaySuper(playerCount int) {
 				fmt.Printf("Player %d wins!\n", player)
 				// wait for user to press a key before returning to main menu
 				fmt.Print("Press any key to go back to main menu...")
+
 				err := keyboard.Open() // begin keyboard listening
 				if err != nil {
 					log.Fatal(err)
 				}
-				_, _, err = keyboard.GetKey() // get the key that is pressed (we arent storing it we dont need to know what it is)
+
+				// get key that is pressed, not storing it, no need to know what it is exactly
+				_, _, err = keyboard.GetKey()
 				if err != nil {
 					log.Fatal(err)
 				}
-				defer keyboard.Close() // end keyboard listening
+
+				err = keyboard.Close() // end keyboard listening
+				if err != nil {
+					return err
+				}
 				// force end game
-				return
+				return nil
 			}
 		}
 
 		// swap to next player after turn is finished
-		player = utils.SwitchPlayer(playerCount, player)
+		player = utils.SwitchPlayer(player)
 	}
 	// only display tie message if player did not quit the game
 	if !didPlayerQuit {
 		utils.PrintSuperBoard(gameEnd)
 		fmt.Println("It's a tie!")
 	}
+	return nil
 }

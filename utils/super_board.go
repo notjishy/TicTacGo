@@ -192,11 +192,12 @@ func printSubHorizontalDivider(i int, regColsTaken []int, gameEnd bool) {
 }
 
 // prints respective row of a subboard
+// i dont remember what the fuck is going on here, but it does the thing said above
 func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
 	gameConfig := config.GetConfig()
 
 	for x, cell := range subBoardRow {
-		cellPart := ""
+		cellPart := "" // what the hell is a cell part
 		if x < 1 && j > 0 {
 			cellPart = color.With(accent, " | %-3s")
 		} else {

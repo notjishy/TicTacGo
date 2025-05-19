@@ -9,7 +9,7 @@ import (
 
 var confirmQuit string
 
-func SwitchPlayer(playerCount int, player int) int {
+func SwitchPlayer(player int) int {
 	if player == 1 {
 		return 2
 	}
@@ -35,12 +35,15 @@ func ParsePlayerMove(move string) (int, int, bool) {
 	return row, col, row >= 0 && row < 3 && col >= 0 && col < 3
 }
 
-func confirmQuitGame() bool {
+func confirmQuitGame() (bool, error) {
 	fmt.Print("Are you sure you want to quit? (Y/N) ")
-	fmt.Scan(&confirmQuit)
+	_, err := fmt.Scan(&confirmQuit)
+	if err != nil {
+		return false, err
+	}
 
 	if strings.ToLower(confirmQuit) != "y" {
-		return false
+		return false, nil
 	}
-	return true
+	return true, nil
 }

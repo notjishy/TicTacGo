@@ -7,15 +7,15 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var config ConfigStruct
+var config Struct
 
-// define the config
-type ConfigStruct struct {
+// Struct - define the config
+type Struct struct {
 	Player1 string `yaml:"player1"`
 	Player2 string `yaml:"player2"`
 }
 
-func GetConfig() ConfigStruct {
+func GetConfig() Struct {
 	// only read file if it hasnt already been read and loaded
 	if config.Player1 == "" {
 		loadConfig()

@@ -2,13 +2,12 @@ package gamemodes
 
 import (
 	"fmt"
-	"log"
 	"tictacgo/utils"
 
 	"github.com/eiannone/keyboard"
 )
 
-func PlayRegular(playerCount int) {
+func PlayRegular(playerCount int) error {
 	utils.InitializeBoard()
 	// set variables at start of game
 	player = 1
@@ -22,9 +21,14 @@ func PlayRegular(playerCount int) {
 		if player == 1 || (playerCount == 2 && player == 2) {
 			utils.PrintBoard()
 			// acquire move from player. returns boolean value indicating if player quit the game or not
-			didPlayerQuit = utils.GetRegularPlayerMove(player, utils.Board)
+			didPlayerQuit, err := utils.GetRegularPlayerMove(player, utils.Board)
+			if err != nil {
+				return err
+			}
 			// if player chose to quit the game, force end this gameloop
-			if didPlayerQuit { break } // force end game and go back to main
+			if didPlayerQuit {
+				break
+			} // force end game and go back to main
 		} else {
 			utils.GetRegularComputerMove(player)
 		}
@@ -39,21 +43,33 @@ func PlayRegular(playerCount int) {
 				fmt.Printf("Player %d wins!\n", player)
 				// wait for user to press a key before returning to main menu
 				fmt.Print("Press any key to go back to main menu...")
+
 				err := keyboard.Open() // begin keyboard listening
-				if err != nil { log.Fatal(err) }
-				_, _, err = keyboard.GetKey() // get the key that is pressed (we arent storing it we dont need to know what it is)
-				if err != nil { log.Fatal(err) }
-				defer keyboard.Close() // end keyboard listening
+				if err != nil {
+					return err
+				}
+
+				// get key that is pressed, not storing it, no need to know what it is exactly
+				_, _, err = keyboard.GetKey()
+				if err != nil {
+					return err
+				}
+
+				err = keyboard.Close() // end keyboard listening
+				if err != nil {
+					return err
+				}
 				// force end game
-				return
+				return nil
 			}
 		}
 		// swap to next player after turn is finished
-		player = utils.SwitchPlayer(playerCount, player)
+		player = utils.SwitchPlayer(player)
 	}
 	// only print message if player did not quit the game
 	if !didPlayerQuit {
 		utils.PrintBoard()
 		fmt.Println("It's a tie!")
 	}
+	return nil
 }
