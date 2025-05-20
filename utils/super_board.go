@@ -86,8 +86,6 @@ func GetEmptySubBoards() int {
 
 // PrintSuperBoard - prints the SuperBoard with sub-boards
 func PrintSuperBoard(gameEnd bool) {
-	gameConfig := config.GetConfig()
-
 	// clear the screen
 	screen.Clear()
 
@@ -120,9 +118,9 @@ func PrintSuperBoard(gameEnd bool) {
 				cellColor := standard
 				if i == ActiveSectorRow && j == ActiveSectorCol && !SectorBlocked && !gameEnd {
 					cellColor = active
-				} else if Board[i][j] == gameConfig.Player1 {
+				} else if Board[i][j] == config.Settings.Player1 {
 					cellColor = player1
-				} else if Board[i][j] == gameConfig.Player2 {
+				} else if Board[i][j] == config.Settings.Player2 {
 					cellColor = player2
 				} else if Board[i][j] == "-" {
 					cellColor = tie
@@ -147,8 +145,6 @@ func PrintSuperBoard(gameEnd bool) {
 }
 
 func printSubHorizontalDivider(i int, regColsTaken []int, gameEnd bool) {
-	gameConfig := config.GetConfig()
-
 	first := standard
 	second := standard
 	third := standard
@@ -168,9 +164,9 @@ func printSubHorizontalDivider(i int, regColsTaken []int, gameEnd bool) {
 		for j := 0; j < len(regColsTaken); j++ {
 			if Board[i][regColsTaken[j]] != " " {
 				var blockedSectorColor string
-				if Board[i][regColsTaken[j]] == gameConfig.Player1 {
+				if Board[i][regColsTaken[j]] == config.Settings.Player1 {
 					blockedSectorColor = player1
-				} else if Board[i][regColsTaken[j]] == gameConfig.Player2 {
+				} else if Board[i][regColsTaken[j]] == config.Settings.Player2 {
 					blockedSectorColor = player2
 				} else if Board[i][regColsTaken[j]] == "-" {
 					blockedSectorColor = tie
@@ -194,8 +190,6 @@ func printSubHorizontalDivider(i int, regColsTaken []int, gameEnd bool) {
 // prints respective row of a subboard
 // i dont remember what the fuck is going on here, but it does the thing said above
 func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
-	gameConfig := config.GetConfig()
-
 	for x, cell := range subBoardRow {
 		cellPart := "" // what the hell is a cell part
 		if x < 1 && j > 0 {
@@ -204,12 +198,12 @@ func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
 			cellPart = color.With(sectorColor, " | %-3s")
 		}
 
-		if Board[i][j] == gameConfig.Player1 {
+		if Board[i][j] == config.Settings.Player1 {
 			fmt.Printf(cellPart, color.With(player1, cell))
 			if j > 1 && x > 1 {
 				fmt.Print(color.With(player1, " |"))
 			}
-		} else if Board[i][j] == gameConfig.Player2 {
+		} else if Board[i][j] == config.Settings.Player2 {
 			fmt.Printf(cellPart, color.With(player2, cell))
 			if j > 1 && x > 1 {
 				fmt.Print(color.With(player2, " |"))
@@ -220,7 +214,7 @@ func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
 				fmt.Print(color.With(tie, " |"))
 			}
 		} else {
-			if strings.HasSuffix(cell, gameConfig.Player1) {
+			if strings.HasSuffix(cell, config.Settings.Player1) {
 				fmt.Printf(cellPart, color.With(player1, cell))
 			} else {
 				fmt.Printf(cellPart, color.With(player2, cell))

@@ -17,11 +17,10 @@ func SwitchPlayer(player int) int {
 }
 
 func GetPlayerSymbol(player int) string {
-	gameConfig := config.GetConfig()
 	if player == 1 {
-		return gameConfig.Player1
+		return config.Settings.Player1
 	}
-	return gameConfig.Player2
+	return config.Settings.Player2
 }
 
 func ParsePlayerMove(move string) (int, int, bool) {

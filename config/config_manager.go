@@ -1,13 +1,12 @@
 package config
 
 import (
-	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
 )
 
-var config Struct
+var Settings Struct
 
 // Struct - define the config
 type Struct struct {
@@ -15,22 +14,13 @@ type Struct struct {
 	Player2 string `yaml:"player2"`
 }
 
-func GetConfig() Struct {
-	// only read file if it hasnt already been read and loaded
-	if config.Player1 == "" {
-		loadConfig()
-	}
-	return config
-}
-
-func loadConfig() {
-	fmt.Println("read config")
+func Load() {
 	configFile, err := os.ReadFile("./config/config.yaml")
 	if err != nil {
 		panic(err)
 	}
 
-	err = yaml.Unmarshal(configFile, &config)
+	err = yaml.Unmarshal(configFile, &Settings)
 	if err != nil {
 		panic(err)
 	}
