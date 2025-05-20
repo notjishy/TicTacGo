@@ -1,3 +1,6 @@
+// WARNING
+// THIS FILE IS FUCKING AWFUL AND WILL BE REFACTORED
+
 package utils
 
 import (
@@ -18,8 +21,12 @@ const (
 )
 
 var (
-	player1  = color.Red
-	player2  = color.Cyan
+	player1 = func() string {
+		return config.Settings.Player1.GetColor()
+	}
+	player2 = func() string {
+		return config.Settings.Player2.GetColor()
+	}
 	standard = color.Blue
 	accent   = color.Reset
 	active   = color.Green
@@ -118,10 +125,10 @@ func PrintSuperBoard(gameEnd bool) {
 				cellColor := standard
 				if i == ActiveSectorRow && j == ActiveSectorCol && !SectorBlocked && !gameEnd {
 					cellColor = active
-				} else if Board[i][j] == config.Settings.Player1 {
-					cellColor = player1
-				} else if Board[i][j] == config.Settings.Player2 {
-					cellColor = player2
+				} else if Board[i][j] == config.Settings.Player1.Symbol {
+					cellColor = player1()
+				} else if Board[i][j] == config.Settings.Player2.Symbol {
+					cellColor = player2()
 				} else if Board[i][j] == "-" {
 					cellColor = tie
 				}
@@ -164,10 +171,10 @@ func printSubHorizontalDivider(i int, regColsTaken []int, gameEnd bool) {
 		for j := 0; j < len(regColsTaken); j++ {
 			if Board[i][regColsTaken[j]] != " " {
 				var blockedSectorColor string
-				if Board[i][regColsTaken[j]] == config.Settings.Player1 {
-					blockedSectorColor = player1
-				} else if Board[i][regColsTaken[j]] == config.Settings.Player2 {
-					blockedSectorColor = player2
+				if Board[i][regColsTaken[j]] == config.Settings.Player1.Symbol {
+					blockedSectorColor = player1()
+				} else if Board[i][regColsTaken[j]] == config.Settings.Player2.Symbol {
+					blockedSectorColor = player2()
 				} else if Board[i][regColsTaken[j]] == "-" {
 					blockedSectorColor = tie
 				}
@@ -198,15 +205,15 @@ func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
 			cellPart = color.With(sectorColor, " | %-3s")
 		}
 
-		if Board[i][j] == config.Settings.Player1 {
-			fmt.Printf(cellPart, color.With(player1, cell))
+		if Board[i][j] == config.Settings.Player1.Symbol {
+			fmt.Printf(cellPart, color.With(player1(), cell))
 			if j > 1 && x > 1 {
-				fmt.Print(color.With(player1, " |"))
+				fmt.Print(color.With(player1(), " |"))
 			}
-		} else if Board[i][j] == config.Settings.Player2 {
-			fmt.Printf(cellPart, color.With(player2, cell))
+		} else if Board[i][j] == config.Settings.Player2.Symbol {
+			fmt.Printf(cellPart, color.With(player2(), cell))
 			if j > 1 && x > 1 {
-				fmt.Print(color.With(player2, " |"))
+				fmt.Print(color.With(player2(), " |"))
 			}
 		} else if Board[i][j] == "-" {
 			fmt.Printf(cellPart, color.With(tie, cell))
@@ -214,10 +221,10 @@ func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
 				fmt.Print(color.With(tie, " |"))
 			}
 		} else {
-			if strings.HasSuffix(cell, config.Settings.Player1) {
-				fmt.Printf(cellPart, color.With(player1, cell))
+			if strings.HasSuffix(cell, config.Settings.Player1.Symbol) {
+				fmt.Printf(cellPart, color.With(player1(), cell))
 			} else {
-				fmt.Printf(cellPart, color.With(player2, cell))
+				fmt.Printf(cellPart, color.With(player2(), cell))
 			}
 			if j > 1 && x > 1 {
 				fmt.Print(color.With(sectorColor, " |"))

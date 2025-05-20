@@ -34,10 +34,12 @@ func PrintBoard() {
 		// row 1 = a, row 2 = b, row 3 = c
 		fmt.Print(string(rune('a' + i)))
 		for _, cell := range row {
-			if strings.HasSuffix(cell, config.Settings.Player1) {
-				fmt.Printf(" | %s", color.InRed(cell))
+			if strings.HasSuffix(cell, config.Settings.Player1.Symbol) {
+				playerColor := config.Settings.Player1.GetColor()
+				fmt.Printf(" | %s", color.With(playerColor, cell))
 			} else {
-				fmt.Printf(" | %s", color.InCyan(cell))
+				playerColor := config.Settings.Player2.GetColor()
+				fmt.Printf(" | %s", color.With(playerColor, cell))
 			}
 		}
 		fmt.Println(" |")

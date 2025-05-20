@@ -18,9 +18,9 @@ func SwitchPlayer(player int) int {
 
 func GetPlayerSymbol(player int) string {
 	if player == 1 {
-		return config.Settings.Player1
+		return config.Settings.Player1.Symbol
 	}
-	return config.Settings.Player2
+	return config.Settings.Player2.Symbol
 }
 
 func ParsePlayerMove(move string) (int, int, bool) {

@@ -1,3 +1,8 @@
-# player symbols
-player1: X
-player2: O
+# player settings
+# supported colors: black, red, green, yellow, blue, purple, cyan, grey, gray, white
+player1:
+  symbol: X
+  color: red
+player2:
+    symbol: O
+    color: cyan

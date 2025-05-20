@@ -2,19 +2,49 @@ package config
 
 import (
 	"fmt"
-	"os"
-
+	"github.com/TwiN/go-color"
 	"gopkg.in/yaml.v3"
+	"os"
 )
 
 var Settings Struct
 
-// Struct - define the config
-type Struct struct {
-	Player1 string `yaml:"player1"`
-	Player2 string `yaml:"player2"`
+// Player - player specific settings
+type Player struct {
+	Symbol string `yaml:"symbol"`
+	Color  string `yaml:"color"`
 }
 
+// Struct - define the config structure
+type Struct struct {
+	Player1 Player `yaml:"player1"`
+	Player2 Player `yaml:"player2"`
+}
+
+// GetColor - return translated color from color name in config
+func (p Player) GetColor() string {
+	// all supported colors (minus white as it is default)
+	colorMap := map[string]string{
+		"red":    color.Red,
+		"cyan":   color.Cyan,
+		"black":  color.Black,
+		"green":  color.Green,
+		"yellow": color.Yellow,
+		"blue":   color.Blue,
+		"purple": color.Purple,
+		"gray":   color.Gray,
+		"grey":   color.Gray,
+	}
+
+	// verify color is valid and return it
+	if c, exists := colorMap[p.Color]; exists {
+		return c
+	}
+
+	return color.White // default
+}
+
+// Load - load the config file
 func Load() error {
 	configFile, err := os.ReadFile("./config/config.yaml")
 	if err != nil {
