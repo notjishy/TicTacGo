@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -14,14 +15,16 @@ type Struct struct {
 	Player2 string `yaml:"player2"`
 }
 
-func Load() {
+func Load() error {
 	configFile, err := os.ReadFile("./config/config.yaml")
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("error reading the config file: %w", err)
 	}
 
 	err = yaml.Unmarshal(configFile, &Settings)
 	if err != nil {
-		panic(err)
+		return fmt.Errorf("error unmarshalling config: %w", err)
 	}
+
+	return nil
 }

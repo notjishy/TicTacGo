@@ -11,7 +11,11 @@ import (
 )
 
 func main() {
-	config.Load()
+	err := config.Load()
+	if err != nil {
+		fmt.Println("Error loading config:", err)
+		return
+	}
 
 	// print main menu here and again at end of loop
 	// that way we dont immediately clear out the error messages if there is one, because we dont close the program
