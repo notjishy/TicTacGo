@@ -81,19 +81,18 @@ func Load() error {
 		}
 	}
 
-	file, err := os.ReadFile(filepath.Join(path, "config.yaml"))
+	configPath := filepath.Join(path, "config.yaml")
+	file, err := os.ReadFile(configPath)
 	if err != nil {
 		// create config file if it doesn't exist already
 		if os.IsNotExist(err) {
 			// make directory path
-			err := os.MkdirAll(path, 0755)
-			if err != nil {
+			if err := os.MkdirAll(path, 0755); err != nil {
 				return fmt.Errorf("error creating config directory: %w", err)
 			}
 
 			// write config file
-			err = os.WriteFile(filepath.Join(path, "config.yaml"), []byte(defaults), 0644)
-			if err != nil {
+			if err := os.WriteFile(configPath, []byte(defaults), 0644); err != nil {
 				return fmt.Errorf("error creating config file: %w", err)
 			}
 
@@ -104,8 +103,7 @@ func Load() error {
 		}
 	}
 
-	err = yaml.Unmarshal(file, &Settings)
-	if err != nil {
+	if err := yaml.Unmarshal(file, &Settings); err != nil {
 		return fmt.Errorf("error unmarshalling config: %w", err)
 	}
 
