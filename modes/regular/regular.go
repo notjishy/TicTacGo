@@ -1,4 +1,4 @@
-package gamemodes
+package regular
 
 import (
 	"fmt"
@@ -8,8 +8,13 @@ import (
 	"github.com/eiannone/keyboard"
 )
 
-func PlayRegular(playerCount int) error {
-	utils.InitializeBoard()
+var player int
+var availableMoves int
+
+var didPlayerQuit bool
+
+func Play(playerCount int) error {
+	InitializeBoard()
 	// set variables at start of game
 	player = 1
 	availableMoves = 9
@@ -23,9 +28,9 @@ func PlayRegular(playerCount int) error {
 		// only ask for player's move if the current turn is for an actual person.
 		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
 		if player == 1 || (playerCount == 2 && player == 2) {
-			utils.PrintBoard(player1Color, player2Color)
+			PrintBoard(player1Color, player2Color)
 			// acquire move from player. returns boolean value indicating if player quit the game or not
-			didPlayerQuit, err := utils.GetRegularPlayerMove(player, utils.Board)
+			didPlayerQuit, err := GetPlayerMove(player, Board)
 			if err != nil {
 				return err
 			}
@@ -34,7 +39,7 @@ func PlayRegular(playerCount int) error {
 				break
 			} // force end game and go back to main
 		} else {
-			utils.GetRegularComputerMove(player)
+			GetComputerMove(player)
 		}
 		// decrement moves remaining
 		availableMoves--
@@ -42,8 +47,8 @@ func PlayRegular(playerCount int) error {
 		// check board for win conditions.
 		// if moves is >= 5, no need to check as it would be impossible
 		if availableMoves < 5 {
-			if utils.CheckForWin(player, utils.Board) {
-				utils.PrintBoard(player1Color, player2Color)
+			if CheckForWin(player, Board) {
+				PrintBoard(player1Color, player2Color)
 				fmt.Printf("Player %d wins!\n", player)
 				// wait for user to press a key before returning to main menu
 				fmt.Print("Press any key to go back to main menu...")
@@ -72,7 +77,7 @@ func PlayRegular(playerCount int) error {
 	}
 	// only print message if player did not quit the game
 	if !didPlayerQuit {
-		utils.PrintBoard(player1Color, player2Color)
+		PrintBoard(player1Color, player2Color)
 		fmt.Println("It's a tie!")
 	}
 	return nil

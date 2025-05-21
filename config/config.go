@@ -60,6 +60,15 @@ func (p Player) GetColor() string {
 	return color.White // default
 }
 
+// GetPlayerSymbol - return the symbol of the player
+// @TODO: make this function obsolete and remove it
+func GetPlayerSymbol(player int) string {
+	if player == 1 {
+		return Settings.Player1.Symbol
+	}
+	return Settings.Player2.Symbol
+}
+
 // Load - load the config file
 func Load() error {
 	// get config path based on user's OS

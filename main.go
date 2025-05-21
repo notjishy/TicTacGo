@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/TwiN/go-color"
+	"github.com/inancgumus/screen"
 	"strings"
 	"tictacgo/config"
-	"tictacgo/gamemodes"
-
-	"github.com/inancgumus/screen"
+	"tictacgo/modes/regular"
+	"tictacgo/modes/super"
 )
 
 func main() {
@@ -42,9 +42,9 @@ func main() {
 		}
 
 		if selectedMode == "r" {
-			err = gamemodes.PlayRegular(playerCount)
+			err = regular.Play(playerCount)
 		} else if selectedMode == "s" {
-			err = gamemodes.PlaySuper(playerCount)
+			err = super.Play(playerCount)
 		}
 
 		mainMenu() // see above
