@@ -1,20 +1,16 @@
-package regular
+package game
 
 import (
 	"fmt"
 	"tictacgo/config"
+	"tictacgo/game/board"
 	"tictacgo/utils"
 
 	"github.com/eiannone/keyboard"
 )
 
-var player int
-var availableMoves int
-
-var didPlayerQuit bool
-
-func Play(playerCount int) error {
-	InitializeBoard()
+func PlayRegular(playerCount int) error {
+	board.InitializeBoard()
 	// set variables at start of game
 	player = 1
 	availableMoves = 9
@@ -28,9 +24,9 @@ func Play(playerCount int) error {
 		// only ask for player's move if the current turn is for an actual person.
 		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
 		if player == 1 || (playerCount == 2 && player == 2) {
-			PrintBoard(player1Color, player2Color)
+			board.PrintBoard(player1Color, player2Color)
 			// acquire move from player. returns boolean value indicating if player quit the game or not
-			didPlayerQuit, err := GetPlayerMove(player, Board)
+			didPlayerQuit, err := board.GetPlayerMove(player, board.Grid)
 			if err != nil {
 				return err
 			}
@@ -39,7 +35,7 @@ func Play(playerCount int) error {
 				break
 			} // force end game and go back to main
 		} else {
-			GetComputerMove(player)
+			board.GetComputerMove(player)
 		}
 		// decrement moves remaining
 		availableMoves--
@@ -47,8 +43,8 @@ func Play(playerCount int) error {
 		// check board for win conditions.
 		// if moves is >= 5, no need to check as it would be impossible
 		if availableMoves < 5 {
-			if CheckForWin(player, Board) {
-				PrintBoard(player1Color, player2Color)
+			if board.CheckForWin(player, board.Grid) {
+				board.PrintBoard(player1Color, player2Color)
 				fmt.Printf("Player %d wins!\n", player)
 				// wait for user to press a key before returning to main menu
 				fmt.Print("Press any key to go back to main menu...")
@@ -77,7 +73,7 @@ func Play(playerCount int) error {
 	}
 	// only print message if player did not quit the game
 	if !didPlayerQuit {
-		PrintBoard(player1Color, player2Color)
+		board.PrintBoard(player1Color, player2Color)
 		fmt.Println("It's a tie!")
 	}
 	return nil

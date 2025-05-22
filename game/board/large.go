@@ -1,14 +1,13 @@
 // WARNING
 // THIS FILE IS FUCKING AWFUL AND WILL BE REFACTORED
 
-package super
+package board
 
 import (
 	"fmt"
 	"math/rand"
 	"strings"
 	"tictacgo/config"
-	"tictacgo/modes/regular"
 	"tictacgo/utils"
 
 	"github.com/TwiN/go-color"
@@ -64,7 +63,7 @@ func InitializeSuperBoard() {
 		GameBoard.Cells[i][j].Cells[x][y] = " "
 	}
 
-	regular.InitializeBoard()
+	InitializeBoard()
 }
 
 // GetEmptySpaces - count how many empty spaces remaining in a subboard
@@ -85,7 +84,7 @@ func GetEmptySubBoards() int {
 	openSubBoards := 0
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
-			if regular.Board[i][j] == " " {
+			if Grid[i][j] == " " {
 				openSubBoards++
 			}
 		}
@@ -101,7 +100,7 @@ func PrintSuperBoard(gameEnd bool) {
 	var regColsTaken []int
 	for i := 0; i < 3; i++ {
 		for j := 0; j < 3; j++ {
-			if regular.Board[i][j] != " " {
+			if Grid[i][j] != " " {
 				regColsTaken = append(regColsTaken, j)
 			}
 		}
@@ -127,11 +126,11 @@ func PrintSuperBoard(gameEnd bool) {
 				cellColor := standard
 				if i == ActiveSectorRow && j == ActiveSectorCol && !SectorBlocked && !gameEnd {
 					cellColor = active
-				} else if regular.Board[i][j] == config.Settings.Player1.Symbol {
+				} else if Grid[i][j] == config.Settings.Player1.Symbol {
 					cellColor = player1()
-				} else if regular.Board[i][j] == config.Settings.Player2.Symbol {
+				} else if Grid[i][j] == config.Settings.Player2.Symbol {
 					cellColor = player2()
-				} else if regular.Board[i][j] == "-" {
+				} else if Grid[i][j] == "-" {
 					cellColor = tie
 				}
 				printSubBoardRow(GameBoard.Cells[i][j].Cells[subRow], i, j, cellColor)
@@ -171,13 +170,13 @@ func printSubHorizontalDivider(i int, regColsTaken []int, gameEnd bool) {
 	}
 	if len(regColsTaken) > 0 {
 		for j := 0; j < len(regColsTaken); j++ {
-			if regular.Board[i][regColsTaken[j]] != " " {
+			if Grid[i][regColsTaken[j]] != " " {
 				var blockedSectorColor string
-				if regular.Board[i][regColsTaken[j]] == config.Settings.Player1.Symbol {
+				if Grid[i][regColsTaken[j]] == config.Settings.Player1.Symbol {
 					blockedSectorColor = player1()
-				} else if regular.Board[i][regColsTaken[j]] == config.Settings.Player2.Symbol {
+				} else if Grid[i][regColsTaken[j]] == config.Settings.Player2.Symbol {
 					blockedSectorColor = player2()
-				} else if regular.Board[i][regColsTaken[j]] == "-" {
+				} else if Grid[i][regColsTaken[j]] == "-" {
 					blockedSectorColor = tie
 				}
 
@@ -207,17 +206,17 @@ func printSubBoardRow(subBoardRow [3]string, i int, j int, sectorColor string) {
 			cellPart = color.With(sectorColor, " | %-3s")
 		}
 
-		if regular.Board[i][j] == config.Settings.Player1.Symbol {
+		if Grid[i][j] == config.Settings.Player1.Symbol {
 			fmt.Printf(cellPart, color.With(player1(), cell))
 			if j > 1 && x > 1 {
 				fmt.Print(color.With(player1(), " |"))
 			}
-		} else if regular.Board[i][j] == config.Settings.Player2.Symbol {
+		} else if Grid[i][j] == config.Settings.Player2.Symbol {
 			fmt.Printf(cellPart, color.With(player2(), cell))
 			if j > 1 && x > 1 {
 				fmt.Print(color.With(player2(), " |"))
 			}
-		} else if regular.Board[i][j] == "-" {
+		} else if Grid[i][j] == "-" {
 			fmt.Printf(cellPart, color.With(tie, cell))
 			if j > 1 && x > 1 {
 				fmt.Print(color.With(tie, " |"))
@@ -259,7 +258,7 @@ getSuperPlayerMoveFunctionStart:
 		}
 	}
 
-	row, col, valid := regular.ParseMoveInput(move)
+	row, col, valid := ParseMoveInput(move)
 	if !valid || GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells[row][col] != " " {
 		fmt.Println("Invalid move. Try again.")
 		_, _, _, err := GetSuperPlayerMove(player, availableMoves, availableBoards)
@@ -293,7 +292,7 @@ func GetSuperComputerMove(player int) (int, int) {
 			for {
 				row := rand.Intn(3)
 				col := rand.Intn(3)
-				if regular.Board[row][col] == " " {
+				if Grid[row][col] == " " {
 					ActiveSectorRow = row
 					ActiveSectorCol = col
 					SectorBlocked = false
@@ -329,9 +328,9 @@ getSectorMoveFunctionStart:
 		}
 	}
 
-	sectorRow, sectorCol, sectorValid := regular.ParseMoveInput(move)
+	sectorRow, sectorCol, sectorValid := ParseMoveInput(move)
 	// loop this function a valid input is received
-	if !sectorValid || regular.Board[sectorRow][sectorCol] != " " {
+	if !sectorValid || Grid[sectorRow][sectorCol] != " " {
 		fmt.Println("Invalid sector, Try again.")
 		_, err := GetSectorMove(player, availableMoves, availableBoards)
 		if err != nil {
@@ -354,7 +353,7 @@ func ProcessMoveAndUpdateGameState(row int, col int, player int, availableMoves 
 
 	openSubBoards := GetEmptySubBoards()
 	if availableMoves <= 76 {
-		if regular.CheckForWin(player, GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells) {
+		if CheckForWin(player, GameBoard.Cells[ActiveSectorRow][ActiveSectorCol].Cells) {
 			// if a win is found, loop through remaning spaces that are still open in that board and remove that many turns from the remaining moves counter.
 			// those empty spaces are also filled in with a "-".
 			for i := 0; i < 3; i++ {
@@ -367,7 +366,7 @@ func ProcessMoveAndUpdateGameState(row int, col int, player int, availableMoves 
 				}
 			}
 			// set the subboard that was won to the respective player on the super-board and decrement 1 from the remaiming boards count
-			regular.Board[ActiveSectorRow][ActiveSectorCol] = config.GetPlayerSymbol(player)
+			Grid[ActiveSectorRow][ActiveSectorCol] = config.GetPlayerSymbol(player)
 			availableBoards--
 		} else {
 			// if no win, check if that sub-board can still be played
@@ -375,13 +374,13 @@ func ProcessMoveAndUpdateGameState(row int, col int, player int, availableMoves 
 			// filled in the super-board to block it out
 			openSubSpaces := GetEmptySpaces()
 			if openSubSpaces == 0 {
-				regular.Board[ActiveSectorRow][ActiveSectorCol] = "-"
+				Grid[ActiveSectorRow][ActiveSectorCol] = "-"
 			}
 		}
 
 		// set the variable to indicate whether or not the next sector/subboard cannot be in play
 		// the game will use this variable to determine if it needs to ask the player/computer to choose a different sector/subboard
-		if regular.Board[row][col] == " " && openSubBoards >= 1 {
+		if Grid[row][col] == " " && openSubBoards >= 1 {
 			SectorBlocked = false
 		} else {
 			SectorBlocked = true

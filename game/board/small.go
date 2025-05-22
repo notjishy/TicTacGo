@@ -1,4 +1,4 @@
-package regular
+package board
 
 import (
 	"fmt"
@@ -12,14 +12,14 @@ import (
 	"github.com/inancgumus/screen"
 )
 
-// Board - define the board
-var Board [3][3]string
+// Grid - define the board
+var Grid [3][3]string
 
 // InitializeBoard - create the board
 func InitializeBoard() {
-	for row := range Board {
-		for col := range Board[row] {
-			Board[row][col] = " "
+	for row := range Grid {
+		for col := range Grid[row] {
+			Grid[row][col] = " "
 		}
 	}
 }
@@ -31,7 +31,7 @@ func PrintBoard(player1Color string, player2Color string) {
 
 	fmt.Println("\n    1   2   3")
 	// print out 1 row at a time
-	for i, row := range Board {
+	for i, row := range Grid {
 		// + i to 'a' so the row letter increments up.
 		// row 1 = a, row 2 = b, row 3 = c
 		fmt.Print(string(rune('a' + i)))
@@ -109,7 +109,7 @@ getRegularPlayerMoveFunctionStart:
 		return false, nil
 	}
 	// set the players move to the board
-	Board[row][col] = config.GetPlayerSymbol(player)
+	Grid[row][col] = config.GetPlayerSymbol(player)
 	return false, nil
 }
 
@@ -118,9 +118,9 @@ func GetComputerMove(player int) {
 	for {
 		row := rand.Intn(3)
 		col := rand.Intn(3)
-		if Board[row][col] == " " {
+		if Grid[row][col] == " " {
 			// set the move to the board
-			Board[row][col] = config.GetPlayerSymbol(player)
+			Grid[row][col] = config.GetPlayerSymbol(player)
 			return
 		}
 	}

@@ -6,8 +6,7 @@ import (
 	"github.com/inancgumus/screen"
 	"strings"
 	"tictacgo/config"
-	"tictacgo/modes/regular"
-	"tictacgo/modes/super"
+	"tictacgo/game"
 )
 
 func main() {
@@ -42,9 +41,9 @@ func main() {
 		}
 
 		if selectedMode == "r" {
-			err = regular.Play(playerCount)
+			err = game.PlayRegular(playerCount)
 		} else if selectedMode == "s" {
-			err = super.Play(playerCount)
+			err = game.PlaySuper(playerCount)
 		}
 
 		mainMenu() // see above
