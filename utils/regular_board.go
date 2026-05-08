@@ -23,9 +23,7 @@ func InitializeBoard() {
 }
 
 // PrintBoard - print the board in the terminal
-func PrintBoard() {
-	gameConfig := config.GetConfig()
-
+func PrintBoard(player1Color string, player2Color string) {
 	// clear the screen
 	screen.Clear()
 
@@ -36,10 +34,10 @@ func PrintBoard() {
 		// row 1 = a, row 2 = b, row 3 = c
 		fmt.Print(string(rune('a' + i)))
 		for _, cell := range row {
-			if strings.HasSuffix(cell, gameConfig.Player1) {
-				fmt.Printf(" | %s", color.InRed(cell))
+			if strings.HasSuffix(cell, config.Settings.Player1.Symbol) {
+				fmt.Printf(" | %s", color.With(player1Color, cell))
 			} else {
-				fmt.Printf(" | %s", color.InCyan(cell))
+				fmt.Printf(" | %s", color.With(player2Color, cell))
 			}
 		}
 		fmt.Println(" |")
