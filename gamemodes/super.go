@@ -1,9 +1,8 @@
-package game
+package gamemodes
 
 import (
 	"fmt"
 	"log"
-	"tictacgo/game/board"
 	"tictacgo/utils"
 
 	"github.com/eiannone/keyboard"
@@ -23,23 +22,23 @@ var availableBoards int
 var gameEnd = false
 
 func PlaySuper(playerCount int) error {
-	board.InitializeSuperBoard()
+	utils.InitializeSuperBoard()
 	// set variables at start of game
 	player = 1
 	availableMoves = 81
 	availableBoards = 9
-	board.SectorBlocked = true
+	utils.SectorBlocked = true
 
 	// loop through game until no more moves left and game ties
 	for availableMoves > 0 {
 		// only ask for player's move if the current turn is for an actual person.
 		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
 		if player == 1 || (playerCount == 2 && player == 2) {
-			board.PrintSuperBoard(gameEnd)
+			utils.PrintSuperBoard(gameEnd)
 			// ask player which board to play in if the current selected board is no longer in play (has been won/tied)
-			if availableMoves == 81 || board.Grid[row][col] != " " {
+			if availableMoves == 81 || utils.Board[row][col] != " " {
 				// returns boolean value indicating if the player has quit the game
-				didPlayerQuit, err := board.GetSectorMove(player, availableMoves, availableBoards)
+				didPlayerQuit, err := utils.GetSectorMove(player, availableMoves, availableBoards)
 				if err != nil {
 					return err
 				}
@@ -49,11 +48,11 @@ func PlaySuper(playerCount int) error {
 				}
 
 				// print the board again (so the player can see the highlighted sector/subboard)
-				board.PrintSuperBoard(gameEnd)
+				utils.PrintSuperBoard(gameEnd)
 			}
 			// acquire move from player
 			var err error = nil
-			row, col, didPlayerQuit, err = board.GetSuperPlayerMove(player, availableMoves, availableBoards)
+			row, col, didPlayerQuit, err = utils.GetSuperPlayerMove(player, availableMoves, availableBoards)
 			if err != nil {
 				return err
 			}
@@ -63,18 +62,18 @@ func PlaySuper(playerCount int) error {
 			}
 		} else {
 			// acquire move from computer
-			row, col = board.GetSuperComputerMove(player)
+			row, col = utils.GetSuperComputerMove(player)
 		}
 
 		// update gameboard state (checks for wins in remaining boards, updates the active board, decrements remining moves and boards)
-		availableMoves, availableBoards = board.ProcessMoveAndUpdateGameState(row, col, player, availableMoves, availableBoards)
+		availableMoves, availableBoards = utils.ProcessMoveAndUpdateGameState(row, col, player, availableMoves, availableBoards)
 
 		// check main board for win condition.
 		// if >= 7 boards remaining, no need to check as a win is impossible there
 		if availableBoards < 7 {
-			if board.CheckForWin(player, board.Grid) {
+			if utils.CheckForWin(player, utils.Board) {
 				gameEnd = true
-				board.PrintSuperBoard(gameEnd)
+				utils.PrintSuperBoard(gameEnd)
 				fmt.Printf("Player %d wins!\n", player)
 				// wait for user to press a key before returning to main menu
 				fmt.Print("Press any key to go back to main menu...")
@@ -104,7 +103,7 @@ func PlaySuper(playerCount int) error {
 	}
 	// only display tie message if player did not quit the game
 	if !didPlayerQuit {
-		board.PrintSuperBoard(gameEnd)
+		utils.PrintSuperBoard(gameEnd)
 		fmt.Println("It's a tie!")
 	}
 	return nil

@@ -1,22 +1,17 @@
-package game
+package gamemodes
 
 import (
 	"fmt"
-	"tictacgo/config"
-	"tictacgo/game/board"
 	"tictacgo/utils"
 
 	"github.com/eiannone/keyboard"
 )
 
 func PlayRegular(playerCount int) error {
-	board.InitializeBoard()
+	utils.InitializeBoard()
 	// set variables at start of game
 	player = 1
 	availableMoves = 9
-
-	player1Color := config.Settings.Player1.GetColor()
-	player2Color := config.Settings.Player2.GetColor()
 
 	// loop game until no more moves left
 	// if availableMoves runs out, the game is a tie
@@ -24,9 +19,9 @@ func PlayRegular(playerCount int) error {
 		// only ask for player's move if the current turn is for an actual person.
 		// i.e. if there is only 1 player, do not ask for user input if it isn't their turn.
 		if player == 1 || (playerCount == 2 && player == 2) {
-			board.PrintBoard(player1Color, player2Color)
+			utils.PrintBoard()
 			// acquire move from player. returns boolean value indicating if player quit the game or not
-			didPlayerQuit, err := board.GetPlayerMove(player, board.Grid)
+			didPlayerQuit, err := utils.GetRegularPlayerMove(player, utils.Board)
 			if err != nil {
 				return err
 			}
@@ -35,7 +30,7 @@ func PlayRegular(playerCount int) error {
 				break
 			} // force end game and go back to main
 		} else {
-			board.GetComputerMove(player)
+			utils.GetRegularComputerMove(player)
 		}
 		// decrement moves remaining
 		availableMoves--
@@ -43,8 +38,8 @@ func PlayRegular(playerCount int) error {
 		// check board for win conditions.
 		// if moves is >= 5, no need to check as it would be impossible
 		if availableMoves < 5 {
-			if board.CheckForWin(player, board.Grid) {
-				board.PrintBoard(player1Color, player2Color)
+			if utils.CheckForWin(player, utils.Board) {
+				utils.PrintBoard()
 				fmt.Printf("Player %d wins!\n", player)
 				// wait for user to press a key before returning to main menu
 				fmt.Print("Press any key to go back to main menu...")
@@ -73,7 +68,7 @@ func PlayRegular(playerCount int) error {
 	}
 	// only print message if player did not quit the game
 	if !didPlayerQuit {
-		board.PrintBoard(player1Color, player2Color)
+		utils.PrintBoard()
 		fmt.Println("It's a tie!")
 	}
 	return nil

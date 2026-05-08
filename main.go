@@ -3,19 +3,13 @@ package main
 import (
 	"fmt"
 	"github.com/TwiN/go-color"
-	"github.com/inancgumus/screen"
 	"strings"
-	"tictacgo/config"
-	"tictacgo/game"
+	"tictacgo/gamemodes"
+
+	"github.com/inancgumus/screen"
 )
 
 func main() {
-	err := config.Load()
-	if err != nil {
-		fmt.Println("Error loading config:", err)
-		return
-	}
-
 	// print main menu here and again at end of loop
 	// that way we dont immediately clear out the error messages if there is one, because we dont close the program
 	// from those errors theres no need for that
@@ -41,9 +35,9 @@ func main() {
 		}
 
 		if selectedMode == "r" {
-			err = game.PlayRegular(playerCount)
+			err = gamemodes.PlayRegular(playerCount)
 		} else if selectedMode == "s" {
-			err = game.PlaySuper(playerCount)
+			err = gamemodes.PlaySuper(playerCount)
 		}
 
 		mainMenu() // see above
